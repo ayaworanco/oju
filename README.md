@@ -4,7 +4,9 @@
 
 
 
-![our essence](images/oluwoye.png)
+<p align="center">
+  <img src="images/cowries.png" />
+</p>
 
 A stream processor that can be used for log analysis, security monitoring, network intrusion detection, and host intrusion detection.
 
