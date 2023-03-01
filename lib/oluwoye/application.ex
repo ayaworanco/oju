@@ -11,9 +11,11 @@ defmodule Oluwoye.Application do
       {Oluwoye.Server,
        {7070,
         [
-          # TODO: find a way to read the yaml and get all certfiles
-          {:certfile, "./test/fixtures/cert.pem"},
-          {:keyfile, "./test/fixtures/key.pem"}
+          {:certkeys,
+           [
+             # Each of these maps will correspond by an application certs
+             %{cerfile: "test/fixtures/cert.pem", keyfile: "test/fixtures/key.pem"}
+           ]}
         ]}}
       # Starts a worker by calling: Oluwoye.Worker.start_link(arg)
       # {Oluwoye.Worker, arg}
