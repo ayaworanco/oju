@@ -9,16 +9,19 @@ defmodule Awo.Parser do
   alias Awo.Words.Error
   alias Awo.Words.Auth
 
+  @doc """
+  This will parse a TCP packet incoming from an application to a word struct
+  """
   def parse(string) do
-    # begin the parse of an word 
-    # ex: AUTH:[key=123456]
-    [word, data] = String.split(string, ":")
-
-    case String.upcase(word) do
-      @auth -> generate_word(@auth, data)
-      @error -> generate_word(@error, data)
-      @ok -> generate_word(@ok, data)
-      @log -> generate_word(@log, data)
+    with [word, data] <- String.split(string, ":") do
+      case String.upcase(word) do
+        @auth -> generate_word(@auth, data)
+        @error -> generate_word(@error, data)
+        @ok -> generate_word(@ok, data)
+        @log -> generate_word(@log, data)
+      end
+    else
+      _ -> %Awo.ParserError{}
     end
   end
 

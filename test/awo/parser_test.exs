@@ -1,6 +1,17 @@
 defmodule Awo.Test.ParserTest do
   use ExUnit.Case
 
+  describe "erroring parser" do
+    test "should return an error when a non correct message is incoming" do
+      payload = "a"
+      parsed_value = Awo.Parser.parse(payload)
+
+      assert %Awo.ParserError{msg: msg} = parsed_value
+      refute is_nil(msg)
+      assert msg == "Error parsing packet"
+    end
+  end
+
   describe "AUTH" do
     test "should return a auth word" do
       payload = "AUTH:[key=123456]"
