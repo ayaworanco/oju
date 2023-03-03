@@ -8,15 +8,7 @@ defmodule Oluwoye.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      {Oluwoye.Server,
-       {7070,
-        [
-          {:certkeys,
-           [
-             # Each of these maps will correspond by an application certs
-             %{cerfile: "test/fixtures/cert.pem", keyfile: "test/fixtures/key.pem"}
-           ]}
-        ]}}
+      Oluwoye.Server
       # Starts a worker by calling: Oluwoye.Worker.start_link(arg)
       # {Oluwoye.Worker, arg}
     ]
