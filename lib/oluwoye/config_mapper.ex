@@ -1,11 +1,11 @@
 defmodule Oluwoye.ConfigMapper do
   def get_config_from_file(path \\ "./applications.yaml") do
-    case File.read(path) do
-      {:ok, binary_file} ->
-        nil
+    case YamlElixir.read_from_file(path) do
+      {:ok, yaml} ->
+        yaml
 
-      {:error, :enoent} ->
-        %Oluwoye.Exceptions.ConfigMapperError{msg: "No file exists"}
+      {:error, reason} ->
+        %Oluwoye.Exceptions.ConfigMapperError{msg: reason}
     end
   end
 end
