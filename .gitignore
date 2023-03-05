@@ -25,5 +25,3 @@ oluwoye-*.tar
 # Temporary files, for example, from tests.
 /tmp/
 test/fixtures/*.pem
-test/fixtures/*.yaml
-test/fixtures/*.yml
