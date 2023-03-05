@@ -8,7 +8,7 @@ defmodule Oluwoye.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      {Oluwoye.Server, [port: 7070]}
+      {Oluwoye.Server, [port: 7070, applications_file: :default]}
       # Starts a worker by calling: Oluwoye.Worker.start_link(arg)
       # {Oluwoye.Worker, arg}
     ]
