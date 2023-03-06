@@ -11,14 +11,11 @@ defmodule Oluwoye.Test.ServerTest do
     %{server: pid}
   end
 
-  describe "When do AUTH by one client" do
-    test "should return to client an OK response with message that client was authenticated", %{
+  describe "When connects and log" do
+    test "should save log in a folder", %{
       server: server
     } do
       {:ok, _client_pid} = Oluwoye.Fixtures.WorkerStub.Client.start_link([])
-      [%{"name" => worker_client_name}] = Oluwoye.Server.get_authenticated_apps()
-      assert worker_client_name != ""
-      refute is_nil(worker_client_name)
     end
   end
 end

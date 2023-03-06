@@ -1,55 +1,32 @@
 defmodule Awo.Parser do
-  @auth "AUTH"
-  @error "ERROR"
-  @log "LOG"
-  @ok "OK"
+  @log "log"
 
   alias Awo.Words.Log
-  alias Awo.Words.Ok
-  alias Awo.Words.Error
-  alias Awo.Words.Auth
 
   @doc """
   This will parse a TCP packet incoming from an application to a word struct
   """
+
   def parse(string) do
-    with [word, data] <- String.split(string, ":") do
-      case String.upcase(word) do
-        @auth -> generate_word(@auth, data)
-        @error -> generate_word(@error, data)
-        @ok -> generate_word(@ok, data)
-        @log -> generate_word(@log, data)
+    with [word, key, data] <- String.split(string, ":") do
+      case String.downcase(word) do
+        @log -> generate_word(@log, data, key)
       end
     else
       _ -> %Awo.ParserError{}
     end
   end
 
-  defp generate_word("AUTH", data) do
-    %{"key" => key} = serialize_data(data)
-    %Auth{key: key}
-  end
-
-  defp generate_word("ERROR", data) do
-    %{"msg" => msg} = serialize_data(data)
-    %Error{msg: msg}
-  end
-
-  defp generate_word("LOG", data) do
-    %{"level" => level, "key" => key, "log" => log} = serialize_data(data)
+  defp generate_word("log", data, key) do
+    %{"level" => level, "log" => log} = serialize_data(data)
     %Log{level: level, key: key, log: log}
-  end
-
-  defp generate_word("OK", data) do
-    %{"msg" => msg} = serialize_data(data)
-    %Ok{msg: msg}
   end
 
   defp serialize_data(data) do
     list_of_data =
       data
-      |> String.replace("[", "")
-      |> String.replace("]", "")
+      |> String.replace("{", "")
+      |> String.replace("}", "")
       |> String.split(",")
 
     Enum.map(

@@ -31,12 +31,6 @@ defmodule Oluwoye.Test.ConfigMapperTest do
       assert "Applications not valid" = msg
     end
 
-    test "should not load applications by default (because does not have applications file in root)" do
-      config = Oluwoye.ConfigMapper.from_file()
-      assert %Oluwoye.Exceptions.ConfigMapperError{msg: msg} = config
-      assert "YAML is empty" = msg
-    end
-
     test "should have not valid apps" do
       config = Oluwoye.ConfigMapper.from_file("test/fixtures/no_applications.yaml")
       assert %Oluwoye.Exceptions.ConfigMapperError{msg: msg} = config

@@ -17,29 +17,8 @@ defmodule Oluwoye.Server do
   end
 
   # API functions
-  def get_authenticated_apps, do: GenServer.call(__MODULE__, {:get_authenticated_apps})
-  def authorize_by_key(key), do: GenServer.cast(__MODULE__, {:authorize_by_key, key})
 
   # Server functions
-  def handle_call({:get_authenticated_apps}, _from, %{apps: apps} = state) do
-    authenticated =
-      apps
-      |> Enum.filter(fn %{"authorized" => authorized} -> authorized == true end)
-
-    {:reply, authenticated, state}
-  end
-
-  def handle_cast({:authorize_by_key, key}, %{apps: apps} = state) do
-    apps =
-      Enum.map(apps, fn app ->
-        if app["key"] == key do
-          Map.update(app, "authorized", false, fn _value -> true end)
-        end
-      end)
-
-    {:noreply, %{state | apps: apps}}
-  end
-
   def handle_info(:accept, %{socket: socket} = state) do
     {:ok, _} = :gen_tcp.accept(socket)
     Logger.info("Client connected")
@@ -81,9 +60,6 @@ defmodule Oluwoye.Server do
 
   defp action(packet, apps) do
     case packet do
-      %Awo.Words.Auth{} ->
-        Oluwoye.WordActions.Auth.handle(packet)
-
       %Awo.Words.Log{key: key} ->
         check_from_key_and_handle_log(key, apps, packet)
     end
