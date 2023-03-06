@@ -11,18 +11,12 @@
 A stream processor that can be used for log analysis, security monitoring, network intrusion detection, and host intrusion detection.
 
 > ### Table of contents
-- [AWO Protocol](#awo_protocol)
+- [AWO Protocol](#Awo Protocol)
 - [Contributing](#contributing)
 - [License](#license)
 
-> ### AWO Protocol
+### AWO Protocol
 The AWO protocol is a protocol to communicate with Oluwoye to provider application logs to oluwoye process and take observability. AWO is separated in `WORD` like HTTP verbs.
-- AUTH
-  - This is needed to authenticate your application secret key to Oluwoye. An example of a packet: `AUTH:[key=123456]`
-- ERROR & OK
-  - This will be always an response given from oluwoye when something goes wrong or something goes right
-  - An example of an error packet: `ERROR:[msg="Something goes wrong"]`
-  - An example of an OK packet: `OK:[msg="Something goes successful"]`
 - LOG
   - This is needed when your application needs to send a log to the processor. An example of a packet: `LOG:[key=12345,level=DEBUG,log="Something logger"]`
 
