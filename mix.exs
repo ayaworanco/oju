@@ -8,7 +8,9 @@ defmodule Oluwoye.MixProject do
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      xref: [exclude: [:ssl]]
+      xref: [exclude: [:ssl]],
+      aliases: aliases(),
+      elixirc_paths: ["lib", "test/fixtures"]
     ]
   end
 
@@ -24,6 +26,12 @@ defmodule Oluwoye.MixProject do
   defp deps do
     [
       {:yaml_elixir, "~> 2.9"}
+    ]
+  end
+
+  defp aliases do
+    [
+      test: "test --no-start"
     ]
   end
 end

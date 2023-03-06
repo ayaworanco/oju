@@ -8,7 +8,16 @@ defmodule Oluwoye.Fixtures.WorkerStub.Client do
   end
 
   def init(:no_state) do
-    {:ok, socket} = :gen_tcp.connect(@default_port)
+    {:ok, map} = YamlElixir.read_from_file("test/fixtures/worker_stub/applications.yaml")
+
+    key =
+      Map.get(map, "applications")
+      |> List.first()
+      |> Map.get("key")
+
+    {:ok, socket} = :gen_tcp.connect({127, 0, 0, 1}, @default_port, [:binary, active: true])
+
+    :gen_tcp.send(socket, "AUTH:[key=\"#{key}\"]")
     {:ok, socket}
   end
 end

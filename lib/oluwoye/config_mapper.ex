@@ -1,7 +1,7 @@
 defmodule Oluwoye.ConfigMapper do
-  def from_file(path \\ "./applications.yaml")
   def from_file(""), do: %Oluwoye.Exceptions.ConfigMapperError{msg: "No file path passed"}
   def from_file(nil), do: %Oluwoye.Exceptions.ConfigMapperError{msg: "No file path passed"}
+  def from_file(:default), do: validate_schema("./applications.yaml")
 
   def from_file(path), do: validate_schema(path)
 
@@ -36,7 +36,7 @@ defmodule Oluwoye.ConfigMapper do
     |> Enum.member?(false)
     |> case do
       true -> %Oluwoye.Exceptions.ConfigMapperError{msg: "Applications not valid"}
-      false -> applications
+      false -> applications |> Enum.map(fn app -> Map.put(app, "authorized", false) end)
     end
   end
 end
