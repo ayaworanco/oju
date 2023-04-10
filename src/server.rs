@@ -3,7 +3,7 @@ use std::env;
 use tokio::io::AsyncReadExt;
 use tokio::net::{TcpListener, TcpStream};
 
-use crate::parser::parse;
+use crate::logger::parser::parse;
 
 pub async fn start() -> std::io::Result<()> {
     let port = env::var("PORT").unwrap_or("8080".to_owned());
@@ -36,7 +36,8 @@ async fn handle_stream(stream: &mut TcpStream) {
         }
 
         // parse packet
-        let parsed = parse(&mut buffer);
+        let message = std::str::from_utf8(&mut buffer).unwrap();
+        let parsed = parse(message);
         println!("{:?}", parsed);
     }
 }
