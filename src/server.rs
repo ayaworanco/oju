@@ -23,7 +23,6 @@ pub async fn start() -> std::io::Result<()> {
             handle_stream(&mut stream).await;
         });
     }
-    // Ok(())
 }
 
 async fn handle_stream(stream: &mut TcpStream) {
@@ -37,7 +36,9 @@ async fn handle_stream(stream: &mut TcpStream) {
 
         // parse packet
         let message = std::str::from_utf8(&mut buffer).unwrap();
-        let parsed = parse(message);
-        println!("{:?}", parsed);
+        match parse(message) {
+            Ok(log) => println!("{:?}", log),
+            Err(error) => println!("{:?}", error),
+        }
     }
 }

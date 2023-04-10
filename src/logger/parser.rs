@@ -9,10 +9,7 @@ pub fn parse(packet: &str) -> Result<Log, LogError> {
 }
 
 fn get_clean_string(packet: &str) -> String {
-    packet
-        .trim_matches(char::from(0))
-        //.replace("\n", "")
-        .to_string()
+    packet.trim_matches(char::from(0)).to_string()
 }
 
 fn parse_to_log(clean_string: String) -> Result<Log, LogError> {
