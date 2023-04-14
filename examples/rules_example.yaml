@@ -1,0 +1,16 @@
+- resource: $ipv4
+  operator: equal
+  target: 54.36.149.41
+  action:
+    name: alert_by_email
+    parameters:
+      - tech_lead@gmail.com
+      - warning
+- resource: $status_code
+  operator: equal
+  target: 500
+  action:
+    name: alert_by_email
+    parameters:
+      - product_team@gmail.com
+      - critical
