@@ -12,6 +12,10 @@ lazy_static! {
             "$ipv4".to_owned(),
             Regex::new(r"^(?P<ipv4>[0-9]+.[0-9]+.[0-9]+.[0-9]+)").unwrap(),
         );
+        m.insert(
+            "$status_code".to_owned(),
+            Regex::new(r"^(?P<status_code>[0-9]{3})").unwrap(),
+        );
         m
     };
 }
