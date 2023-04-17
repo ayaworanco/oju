@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"oluwoye/internal/logger"
+)
 
 func main() {
-	fmt.Println("Hello there")
+	logger.StartLogger()
 }
