@@ -1,0 +1,5 @@
+package logger
+
+func StartLogger() {
+
+}
