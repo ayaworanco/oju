@@ -1,5 +1,6 @@
 name: Deploy Docs
 on:
+  workflow_dispatch: {}
   push:
     branches:
       - main
@@ -20,7 +21,8 @@ jobs:
         with:
           node-version: 16
           cache: npm
-      - run: npm ci
+      - name: Install Dependencies
+        run: npm install
       - name: Build
         run: npm run docs:build
       - uses: actions/configure-pages@v2
