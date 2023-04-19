@@ -22,7 +22,7 @@ jobs:
           node-version: 16
           cache: npm
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
       - name: Build
         run: npm run docs:build
       - uses: actions/configure-pages@v2
