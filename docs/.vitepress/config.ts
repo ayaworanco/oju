@@ -4,6 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "Oluwoye",
   description: "A rule-based network and log monitoring system",
+  base: "/oluwoye/",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
