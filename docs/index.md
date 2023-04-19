@@ -9,7 +9,7 @@ hero:
     src: /cowries.png
     alt: Cowries
   actions:
-    - theme: brand
+    - theme: alt
       text: Get Started
       link: /installing
 
