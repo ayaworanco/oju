@@ -1,6 +1,6 @@
 # Installing
 
-## Installing by source
+## Building from source
 
 First you need to get the source code
 
