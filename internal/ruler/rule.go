@@ -12,8 +12,10 @@ var RESOURCE_MAP = map[string]regexp.Regexp{
 }
 
 type Rule struct {
-	Resource, Target, Operator string
-	Action                     Action
+	Resource string `yaml:"resource"`
+	Target   string `yaml:"target"`
+	Operator string `yaml:"operator"`
+	Action   Action `yaml:"action"`
 }
 
 func (rule *Rule) Run(message string) (bool, error) {

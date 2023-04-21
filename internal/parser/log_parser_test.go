@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"oluwoye/internal/config"
 	"testing"
 )
 
@@ -12,29 +13,63 @@ const MALFORMED_HEADER = "LOG AWO\n02:49:12\n54.36.149.41 - - [22/Jan/2019:03:56
 
 const EMPTY_TIMER = "LOG 3FAFCF87-BF66-4DC5-84C1-34E178FF55CC AWO\n\n54.36.149.41 - - [22/Jan/2019:03:56:14 +0330] \"GET /filter/27|13%20%D9%85%DA%AF%D8%A7%D9%BE%DB%8C%DA%A9%D8%B3%D9%84,27|%DA%A9%D9%85%D8%AA%D8%B1%20%D8%A7%D8%B2%205%20%D9%85%DA%AF%D8%A7%D9%BE%DB%8C%DA%A9%D8%B3%D9%84,p53 HTTP/1.1\" 200 30577 \"-\" \"Mozilla/5.0 (compatible; AhrefsBot/6.1; +http://ahrefs.com/robot/)\" \"-\""
 
+const TEST_DISALLOWED_APPS = "LOG AAAAAAAAAAAAAA AWO1.1\n02:49:12\n54.36.149.41 - - [22/Jan/2019:03:56:14 +0330] \"GET /filter/27|13%20%D9%85%DA%AF%D8%A7%D9%BE%DB%8C%DA%A9%D8%B3%D9%84,27|%DA%A9%D9%85%D8%AA%D8%B1%20%D8%A7%D8%B2%205%20%D9%85%DA%AF%D8%A7%D9%BE%DB%8C%DA%A9%D8%B3%D9%84,p53 HTTP/1.1\" 200 30577 \"-\" \"Mozilla/5.0 (compatible; AhrefsBot/6.1; +http://ahrefs.com/robot/)\" \"-\""
+
+const CONFIG_YAML = `
+allowed_applications:
+  - name: "worker"
+    app_key: "3FAFCF87-BF66-4DC5-84C1-34E178FF55CC"
+rules:
+  - resource: $ipv4
+    operator: equal
+    target: 54.36.149.41
+    action:
+      name: alert_by_email
+      parameters:
+        - tech_lead@gmail.com
+        - warning
+  - resource: $status_code
+    operator: equal
+    target: 500
+    action:
+      name: alert_by_email
+      parameters:
+        - product_team@gmail.com
+        - critical
+`
+
+func LoadConfig() config.Config {
+	config, _ := config.BuildConfig([]byte(CONFIG_YAML))
+	return config
+}
+
 func TestMalformedPacket(t *testing.T) {
-	_, parse_error := Parse(MALFORMED_PACKET)
+	config := LoadConfig()
+	_, parse_error := Parse(MALFORMED_PACKET, config.AllowedApplications)
 	if parse_error == nil {
 		t.Error("Packet not malformed")
 	}
 }
 
 func TestMalformedHeader(t *testing.T) {
-	_, parse_error := Parse(MALFORMED_HEADER)
+	config := LoadConfig()
+	_, parse_error := Parse(MALFORMED_HEADER, config.AllowedApplications)
 	if parse_error == nil {
 		t.Error("Header not malformed")
 	}
 }
 
 func TestEmptyTimer(t *testing.T) {
-	_, parse_error := Parse(EMPTY_TIMER)
+	config := LoadConfig()
+	_, parse_error := Parse(EMPTY_TIMER, config.AllowedApplications)
 	if parse_error == nil {
 		t.Error("Timer is empty")
 	}
 }
 
 func TestParseLog(t *testing.T) {
-	log, parse_error := Parse(TEST_PACKET)
+	config := LoadConfig()
+	log, parse_error := Parse(TEST_PACKET, config.AllowedApplications)
 	if parse_error != nil {
 		t.Error(parse_error.Error())
 	}
@@ -42,4 +77,13 @@ func TestParseLog(t *testing.T) {
 	if log.Timer == "" {
 		t.Error("Timer is empty")
 	}
+}
+
+func TestHeaderValidationDisallowedApps(t *testing.T) {
+	config := LoadConfig()
+	_, parse_error := Parse(TEST_DISALLOWED_APPS, config.AllowedApplications)
+	if parse_error == nil {
+		t.Error("Should be an error because that app is not allowed")
+	}
+
 }

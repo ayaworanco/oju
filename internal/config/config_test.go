@@ -11,7 +11,7 @@ allowed_applications:
     app_key: "37F129EF-687E-47AC-B0C4-CBF6516B37ED"
 `
 
-	config, load_error := build_config([]byte(config_yaml))
+	config, load_error := BuildConfig([]byte(config_yaml))
 	if load_error != nil {
 		t.Error(load_error)
 	}

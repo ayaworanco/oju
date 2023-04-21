@@ -2,7 +2,7 @@ package config
 
 import (
 	"errors"
-	"log"
+	"oluwoye/internal/ruler"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -10,39 +10,26 @@ import (
 
 type Config struct {
 	AllowedApplications []Application `yaml:"allowed_applications"`
+	Rules               []ruler.Rule  `yaml:"rules"`
 }
 
 type Application struct {
-	Name, AppKey string
+	Name   string `yaml:"name"`
+	AppKey string `yaml:"app_key"`
 }
 
-func GetAllowedApplications() []Application {
-	config_file, load_config_file_error := load_config_file()
-	if load_config_file_error != nil {
-		log.Fatalln(load_config_file_error.Error())
-	}
-
-	config, load_error := build_config(config_file)
-	if load_error != nil {
-		log.Fatalln(load_error.Error())
-	}
-
-	return config.AllowedApplications
-}
-
-func build_config(config_file []byte) (Config, error) {
+func BuildConfig(config_file []byte) (Config, error) {
 	var config Config
 
 	err := yaml.Unmarshal(config_file, &config)
 	if err != nil {
-		println(err)
 		return Config{}, err
 	}
 
 	return config, nil
 }
 
-func load_config_file() ([]byte, error) {
+func LoadConfigFile() ([]byte, error) {
 	var config_file string
 	config_file = os.Getenv("CONFIG_YAML_PATH")
 
