@@ -45,7 +45,7 @@ func load_rules() ([]byte, error) {
 	rule_file = os.Getenv("RULES_YAML_PATH")
 
 	if rule_file == "" {
-		rule_file = "rules.yaml"
+		rule_file = "./rules.yaml"
 	}
 
 	file, read_error := os.ReadFile(rule_file)

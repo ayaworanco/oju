@@ -1,0 +1,3 @@
+allowed_applications:
+  - name: "worker"
+    app_key: "37F129EF-687E-47AC-B0C4-CBF6516B37ED"
