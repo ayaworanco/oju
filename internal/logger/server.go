@@ -2,6 +2,7 @@ package logger
 
 import (
 	"bufio"
+	"errors"
 	"io"
 	"log"
 	"net"
@@ -11,13 +12,14 @@ import (
 )
 
 func StartLogger() {
+	rules_file, load_error := load_rules()
+	if load_error != nil {
+		log.Fatalln(load_error.Error())
+	}
+
 	listener, listener_error := net.Listen("tcp", ":"+os.Getenv("PORT"))
 	if listener_error != nil {
 		panic("Logger error: " + listener_error.Error())
-	}
-	rules_file, load_rules_file := load_rules()
-	if load_rules_file != nil {
-		panic("Error loading rule file")
 	}
 
 	rules, load_rules_error := ruler.LoadRules(rules_file)
@@ -39,9 +41,17 @@ func StartLogger() {
 }
 
 func load_rules() ([]byte, error) {
-	file, read_error := os.ReadFile(os.Getenv("RULES_YAML_PATH"))
+	var rule_file string
+	rule_file = os.Getenv("RULES_YAML_PATH")
+
+	if rule_file == "" {
+		rule_file = "rules.yaml"
+	}
+
+	file, read_error := os.ReadFile(rule_file)
+
 	if read_error != nil {
-		return nil, read_error
+		return nil, errors.New(rule_file + " file not found")
 	}
 
 	return file, nil

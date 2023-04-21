@@ -2,7 +2,6 @@ package ruler
 
 import (
 	"errors"
-	"fmt"
 	"regexp"
 
 	"gopkg.in/yaml.v3"
@@ -39,7 +38,6 @@ func (rule *Rule) Run(message string) (bool, error) {
 func LoadRules(raw []byte) ([]Rule, error) {
 	var rules []Rule
 	err := yaml.Unmarshal(raw, &rules)
-	fmt.Println("eeror: ", err)
 	if err != nil {
 		return []Rule{}, err
 	}

@@ -1,0 +1,17 @@
+name: building and testing
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.20
+      - name: Build Olu
+        run: go build -v ./cmd/olu/olu.go
+      - name: Test Olu
+        run: go test -v ./...
+      
