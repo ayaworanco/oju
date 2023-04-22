@@ -25,6 +25,11 @@ func NewHeader(head string, allowed_applications []config.Application) (Header, 
 	verb := parts[0]
 	app_key := parts[1]
 	version := parts[2]
+
+	if !is_verb_allowed(verb) {
+		return Header{}, errors.New("verb not allowed")
+	}
+
 	if !is_application_allowed(app_key, allowed_applications) {
 		return Header{}, errors.New("application not allowed")
 	}
@@ -32,9 +37,22 @@ func NewHeader(head string, allowed_applications []config.Application) (Header, 
 	return Header{Verb: verb, AppKey: app_key, Version: version}, nil
 }
 
+func is_verb_allowed(verb string) bool {
+	allowed := []string{
+		"LOG",
+		"QUERY",
+	}
+
+	for _, allowed_verb := range allowed {
+		if allowed_verb == verb {
+			return true
+		}
+	}
+	return false
+}
+
 func is_application_allowed(app_key string, allowed_applications []config.Application) bool {
 	is_allowed := false
-	// fmt.Printf("%#v", allowed_applications)
 
 	for _, application := range allowed_applications {
 		if application.AppKey == app_key {
