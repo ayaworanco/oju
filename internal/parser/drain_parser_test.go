@@ -18,7 +18,7 @@ func TestDrainParsing(t *testing.T) {
 	tree := NewTree(8)
 
 	logs := strings.Split(TEST_LOG_EASY, "\n")
-	for _, log := range logs {
-		DrainParse(tree, log)
+	for id, log := range logs {
+		DrainParse(tree, log, id)
 	}
 }
