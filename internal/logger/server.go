@@ -12,6 +12,8 @@ import (
 
 func StartLogger() {
 	config_file, load_error := config.LoadConfigFile()
+	// tree := parser.NewTree(8)
+
 	if load_error != nil {
 		log.Fatalln(load_error.Error())
 	}

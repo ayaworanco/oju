@@ -3,7 +3,7 @@
 .vscode
 /vendor
 main
-olu
 node_modules
 docs/.vitepress/dist
 docs/.vitepress/cache
+build/*
