@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -21,4 +22,6 @@ func TestDrainParsing(t *testing.T) {
 	for id, log := range logs {
 		DrainParse(tree, log, id)
 	}
+
+	fmt.Printf("%#v", tree.Root.Children["3"])
 }

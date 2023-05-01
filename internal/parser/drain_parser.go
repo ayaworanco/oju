@@ -5,9 +5,12 @@ import (
 	"strings"
 )
 
+const SIMILARITY_THRESHHOLD = 0.6
+
 type Node struct {
 	Data     interface{}
-	Children map[interface{}]*Node
+	Label    string
+	Children map[string]*Node
 }
 
 type Tree struct {
@@ -24,44 +27,60 @@ func NewTree(depth int) *Tree {
 	return &Tree{
 		Root: &Node{
 			Data:     "root",
-			Children: make(map[interface{}]*Node, 0),
+			Children: make(map[string]*Node, 0),
 		},
 		Depth: depth,
 	}
 }
 
-func NewNode(data interface{}) *Node {
+func NewNode(label string, data interface{}) *Node {
 	return &Node{
 		Data:     data,
-		Children: make(map[interface{}]*Node),
+		Label:    label,
+		Children: make(map[string]*Node),
 	}
 }
 
 func (tree *Tree) AddOrUpdateLengthLayer(log string, id int) {
 	parts := strings.SplitN(log, " ", tree.Depth)
 	length := len(parts)
+	label := fmt.Sprint(length)
 
-	child, ok := tree.Root.Children[length]
+	child, ok := tree.Root.Children[label]
 	if !ok {
-		child = NewNode(length)
-		tree.Root.Children[length] = child
+		child = NewNode(label, length)
+		tree.Root.Children[label] = child
 
 	}
 	child.Add(parts[1:], log, id)
 }
 
+func add_log_group(node *Node, log_message string, id int) {
+	log_group := &LogGroup{
+		LogEvent:      log_message,
+		LogParameters: map[int]string{},
+	}
+
+	log_group_id := fmt.Sprintf("log_group_%v", len(strings.Split(log_message, " ")))
+	child, ok := node.Children[log_group_id]
+	if !ok {
+		child = NewNode(log_group_id, log_group)
+		node.Children[log_group_id] = child
+	}
+	found_log_group := child.Data.(*LogGroup)
+	sequence_1 := strings.Split(log_message, " ")
+	sequence_2 := strings.Split(found_log_group.LogEvent, " ")
+	if is_similar(sequence_1, sequence_2) {
+		parameter := get_parameter_by_similarity(sequence_1, sequence_2)
+		if parameter != "" {
+			found_log_group.LogParameters[id] = parameter
+		}
+	}
+}
+
 func (node *Node) Add(parts []string, log_message string, id int) {
 	if len(parts) == 0 {
-		log_group := LogGroup{
-			LogEvent:      log_message,
-			LogParameters: map[int]string{},
-		}
-		child, ok := node.Children[log_group]
-		if !ok {
-			child = NewNode(log_group)
-			node.Children[log_group] = child
-		}
-		// TODO: need to run the similarity function to check if this group is suitable
+		add_log_group(node, log_message, id)
 		return
 	}
 
@@ -72,18 +91,50 @@ func (node *Node) Add(parts []string, log_message string, id int) {
 		path = parts[:len(parts)-1][0]
 	}
 
-	label := path[0]
-	child, ok := node.Children[label]
+	child, ok := node.Children[path]
 	if !ok {
-		child = NewNode(label)
-		node.Children[label] = child
+		child = NewNode(path, path)
+		node.Children[path] = child
 	}
 
 	child.Add(parts[1:], log_message, id)
 }
 
+func get_parameter_by_similarity(sequence_1, sequence_2 []string) string {
+	n := len(sequence_1)
+	if len(sequence_2) < n {
+		n = len(sequence_2)
+	}
+
+	for i := 0; i < n; i++ {
+		if sequence_1[i] != sequence_2[i] {
+			return sequence_1[i]
+		}
+	}
+	return ""
+}
+
+func is_similar(sequence_1, sequence_2 []string) bool {
+	n := len(sequence_1)
+	if len(sequence_2) < n {
+		n = len(sequence_2)
+	}
+
+	var simSeq float64
+	for i := 0; i < n; i++ {
+		if equ(sequence_1[i], sequence_2[i]) {
+			simSeq += 1
+		}
+	}
+	simSeq = simSeq / float64(n)
+	return simSeq >= SIMILARITY_THRESHHOLD
+}
+
+func equ(token_1, token_2 string) bool {
+	return token_1 == token_2
+}
+
 func DrainParse(tree *Tree, log string, id int) {
 	// this tree needs to be updated every time
 	tree.AddOrUpdateLengthLayer(log, id)
-	fmt.Printf("%#v", log)
 }
