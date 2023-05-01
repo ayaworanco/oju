@@ -108,7 +108,6 @@ func add_log_group(node *Node, log_message string, id int) {
 			LogParameters: map[int]string{},
 		}
 	}
-	fmt.Printf("log_event: %v\n", log_event)
 
 	log_group_id := fmt.Sprintf("log_group_%v", len(strings.Split(log_message, " ")))
 
@@ -189,6 +188,5 @@ func is_similar(sequence_1, sequence_2 []string) bool {
 }
 
 func DrainParse(tree *Tree, log string, id int) {
-	// this tree needs to be updated every time
 	tree.AddOrUpdateLengthLayer(log, id)
 }
