@@ -23,7 +23,33 @@ func TestDrainParsing(t *testing.T) {
 		DrainParse(tree, log, id)
 	}
 
-	log_group := tree.Root.Children["3"].Children["Temperature"].Children["*"].Children["exceeds"].Children["log_group_3"].Data
+	log_group := tree.Root.Children["3"].Children["Temperature"].Children["*"].Children["exceeds"].Children["log_group_3"].Data.(*LogGroup)
 
+	if log_group.LogEvent != "Temperature * exceeds" {
+		t.Error("This log should have wildcards")
+	}
+
+	if len(log_group.LogParameters) != 2 {
+		t.Error("This log need to have at least 2 parameters")
+	}
+}
+
+func TestDrainParsingWithOneLog(t *testing.T) {
+	tree := NewTree(8)
+
+	logs := strings.Split(TEST_LOG_ONE, "\n")
+	for id, log := range logs {
+		DrainParse(tree, log, id)
+	}
+
+	log_group := tree.Root.Children["3"].Children["Temperature"].Children["*"].Children["exceeds"].Children["log_group_3"].Data.(*LogGroup)
 	fmt.Printf("%#v", log_group)
+
+	if log_group.LogEvent != "Temperature * exceeds" {
+		t.Error("This log should have wildcards")
+	}
+
+	if len(log_group.LogParameters) != 1 {
+		t.Error("This log need to have at least 1 parameters")
+	}
 }
