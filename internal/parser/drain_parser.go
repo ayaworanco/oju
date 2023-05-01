@@ -3,6 +3,7 @@ package parser
 import (
 	"fmt"
 	"strings"
+	"unicode"
 )
 
 const SIMILARITY_THRESHHOLD = 0.6
@@ -52,7 +53,7 @@ func (tree *Tree) AddOrUpdateLengthLayer(log string, id int) {
 		tree.Root.Children[label] = child
 
 	}
-	child.Add(parts[1:], log, id)
+	child.Add(parts, log, id)
 }
 
 func add_log_group(node *Node, log_message string, id int) {
@@ -91,6 +92,10 @@ func (node *Node) Add(parts []string, log_message string, id int) {
 		path = parts[:len(parts)-1][0]
 	}
 
+	if has_digit(path) {
+		path = "*"
+	}
+
 	child, ok := node.Children[path]
 	if !ok {
 		child = NewNode(path, path)
@@ -98,6 +103,15 @@ func (node *Node) Add(parts []string, log_message string, id int) {
 	}
 
 	child.Add(parts[1:], log_message, id)
+}
+
+func has_digit(token string) bool {
+	for _, char := range token {
+		if unicode.IsDigit(char) {
+			return true
+		}
+	}
+	return false
 }
 
 func get_parameter_by_similarity(sequence_1, sequence_2 []string) string {
