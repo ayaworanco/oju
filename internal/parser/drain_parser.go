@@ -56,29 +56,6 @@ func (tree *Tree) AddOrUpdateLengthLayer(log string, id int) {
 	child.Add(parts, log, id)
 }
 
-func add_log_group(node *Node, log_message string, id int) {
-	log_group := &LogGroup{
-		LogEvent:      log_message,
-		LogParameters: map[int]string{},
-	}
-
-	log_group_id := fmt.Sprintf("log_group_%v", len(strings.Split(log_message, " ")))
-	child, ok := node.Children[log_group_id]
-	if !ok {
-		child = NewNode(log_group_id, log_group)
-		node.Children[log_group_id] = child
-	}
-	found_log_group := child.Data.(*LogGroup)
-	sequence_1 := strings.Split(log_message, " ")
-	sequence_2 := strings.Split(found_log_group.LogEvent, " ")
-	if is_similar(sequence_1, sequence_2) {
-		parameter := get_parameter_by_similarity(sequence_1, sequence_2)
-		if parameter != "" {
-			found_log_group.LogParameters[id] = parameter
-		}
-	}
-}
-
 func (node *Node) Add(parts []string, log_message string, id int) {
 	if len(parts) == 0 {
 		add_log_group(node, log_message, id)
@@ -103,6 +80,73 @@ func (node *Node) Add(parts []string, log_message string, id int) {
 	}
 
 	child.Add(parts[1:], log_message, id)
+}
+
+func add_log_group(node *Node, log_message string, id int) {
+	sequence_log_message := strings.Split(log_message, " ")
+
+	log_event := log_message
+	first_parameter := ""
+
+	for i, seq := range sequence_log_message {
+		if has_digit(seq) {
+			first_parameter = seq
+			sequence_log_message[i] = "*"
+			log_event = strings.Join(sequence_log_message, " ")
+			break
+		}
+	}
+	var log_group *LogGroup
+	if first_parameter != "" {
+		log_group = &LogGroup{
+			LogEvent:      log_event,
+			LogParameters: map[int]string{id: first_parameter},
+		}
+	} else {
+		log_group = &LogGroup{
+			LogEvent:      log_event,
+			LogParameters: map[int]string{},
+		}
+	}
+	fmt.Printf("log_event: %v\n", log_event)
+
+	log_group_id := fmt.Sprintf("log_group_%v", len(strings.Split(log_message, " ")))
+
+	child, ok := node.Children[log_group_id]
+	if !ok {
+		child = NewNode(log_group_id, log_group)
+		node.Children[log_group_id] = child
+	}
+
+	found_log_group := child.Data.(*LogGroup)
+	sequence_1 := strings.Split(log_message, " ")
+	sequence_2 := strings.Split(found_log_group.LogEvent, " ")
+
+	if is_similar(sequence_1, sequence_2) {
+		parameter := get_parameter_by_similarity(sequence_1, sequence_2)
+		if parameter != "" {
+			found_log_group.LogParameters[id] = parameter
+		}
+		update_log_event(found_log_group, log_message)
+	}
+}
+
+func update_log_event(log_group *LogGroup, log_message string) {
+	sequence_log_event := strings.Split(log_group.LogEvent, " ")
+	sequence_log_message := strings.Split(log_message, " ")
+
+	n := len(sequence_log_event)
+	if len(sequence_log_message) < n {
+		n = len(sequence_log_message)
+	}
+
+	for i := 0; i < n; i++ {
+		if sequence_log_event[i] != sequence_log_message[i] {
+			sequence_log_event[i] = "*"
+			log_group.LogEvent = strings.Join(sequence_log_event, " ")
+			break
+		}
+	}
 }
 
 func has_digit(token string) bool {
@@ -136,16 +180,12 @@ func is_similar(sequence_1, sequence_2 []string) bool {
 
 	var simSeq float64
 	for i := 0; i < n; i++ {
-		if equ(sequence_1[i], sequence_2[i]) {
+		if sequence_1[i] == sequence_2[i] {
 			simSeq += 1
 		}
 	}
 	simSeq = simSeq / float64(n)
 	return simSeq >= SIMILARITY_THRESHHOLD
-}
-
-func equ(token_1, token_2 string) bool {
-	return token_1 == token_2
 }
 
 func DrainParse(tree *Tree, log string, id int) {

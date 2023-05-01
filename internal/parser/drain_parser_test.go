@@ -23,5 +23,7 @@ func TestDrainParsing(t *testing.T) {
 		DrainParse(tree, log, id)
 	}
 
-	fmt.Printf("%#v", tree.Root.Children["3"].Children["Temperature"].Children["*"].Children["exceeds"].Children["log_group_3"].Data)
+	log_group := tree.Root.Children["3"].Children["Temperature"].Children["*"].Children["exceeds"].Children["log_group_3"].Data
+
+	fmt.Printf("%#v", log_group)
 }
