@@ -7,6 +7,7 @@ import (
 )
 
 const SIMILARITY_THRESHHOLD = 0.6
+const MAX_CHILD = 100
 
 type Node struct {
 	Data     interface{}
@@ -30,7 +31,7 @@ func NewTree(depth int) *Tree {
 			Data:     "root",
 			Children: make(map[string]*Node, 0),
 		},
-		Depth: depth,
+		Depth: depth - 2,
 	}
 }
 
@@ -57,6 +58,10 @@ func (tree *Tree) AddOrUpdateLengthLayer(log string, id int) {
 }
 
 func (node *Node) Add(parts []string, log_message string, id int) {
+	if len(node.Children) > MAX_CHILD {
+		return
+	}
+
 	if len(parts) == 0 {
 		add_log_group(node, log_message, id)
 		return

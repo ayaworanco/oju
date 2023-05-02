@@ -12,7 +12,7 @@ import (
 
 func StartLogger() {
 	config_file, load_error := config.LoadConfigFile()
-	// tree := parser.NewTree(8)
+	tree := parser.NewTree(8)
 
 	if load_error != nil {
 		log.Fatalln(load_error.Error())
@@ -38,14 +38,15 @@ func StartLogger() {
 			log.Println("Socket Error: ", socket_error.Error())
 		}
 
-		go handle_socket(socket, config)
+		go handle_socket(socket, config, tree)
 	}
 }
 
-func handle_socket(socket net.Conn, config config.Config) {
+func handle_socket(socket net.Conn, config config.Config, tree *parser.Tree) {
 	log.Println("New connection accepted: ", socket.RemoteAddr().String())
 	reader := bufio.NewReader(socket)
 	for {
+		id := 0
 		message, message_error := io.ReadAll(reader)
 		if message_error != nil {
 			if message_error == io.EOF {
@@ -64,8 +65,12 @@ func handle_socket(socket net.Conn, config config.Config) {
 			break
 		}
 
-		for _, rule := range config.Rules {
-			rule.Run(log_message.Message)
-		}
+		parser.DrainParse(tree, log_message.Message, id)
+		id++
+		/*
+			for _, rule := range config.Rules {
+				rule.Run(log_message.Message)
+			}
+		*/
 	}
 }
