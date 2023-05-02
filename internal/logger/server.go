@@ -67,10 +67,5 @@ func handle_socket(socket net.Conn, config config.Config, tree *parser.Tree) {
 
 		parser.DrainParse(tree, log_message.Message, id)
 		id++
-		/*
-			for _, rule := range config.Rules {
-				rule.Run(log_message.Message)
-			}
-		*/
 	}
 }
