@@ -2,7 +2,6 @@ package config
 
 import (
 	"errors"
-	"oluwoye/internal/ruler"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -10,7 +9,6 @@ import (
 
 type Config struct {
 	AllowedApplications []Application `yaml:"allowed_applications"`
-	Rules               []ruler.Rule  `yaml:"rules"`
 }
 
 type Application struct {
