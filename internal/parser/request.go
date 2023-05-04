@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-type Log struct {
+type Request struct {
 	Header  Header
 	Timer   string
 	Message string

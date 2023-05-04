@@ -6,25 +6,25 @@ import (
 	"strings"
 )
 
-func Parse(packet string, allowed_applications []config.Application) (Log, error) {
+func ParseRequest(packet string, allowed_applications []config.Application) (Request, error) {
 	parts := strings.Split(packet, "\n")
 	if len(parts) != 3 {
-		return Log{}, errors.New("malformed packet")
+		return Request{}, errors.New("malformed packet")
 	}
 
 	header, header_error := NewHeader(parts[0], allowed_applications)
 
 	if header_error != nil {
-		return Log{}, header_error
+		return Request{}, header_error
 	}
 
 	timer := parts[1]
 	if timer == "" {
-		return Log{}, errors.New("timer is empty")
+		return Request{}, errors.New("timer is empty")
 	}
 	message := parts[2]
 
-	return Log{
+	return Request{
 		Header:  header,
 		Timer:   timer,
 		Message: message,

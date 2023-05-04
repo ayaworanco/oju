@@ -21,23 +21,6 @@ const CONFIG_YAML = `
 allowed_applications:
   - name: "worker"
     app_key: "3FAFCF87-BF66-4DC5-84C1-34E178FF55CC"
-rules:
-  - resource: $ipv4
-    operator: equal
-    target: 54.36.149.41
-    action:
-      name: alert_by_email
-      parameters:
-        - tech_lead@gmail.com
-        - warning
-  - resource: $status_code
-    operator: equal
-    target: 500
-    action:
-      name: alert_by_email
-      parameters:
-        - product_team@gmail.com
-        - critical
 `
 
 func LoadConfig() config.Config {
@@ -47,7 +30,7 @@ func LoadConfig() config.Config {
 
 func TestMalformedPacket(t *testing.T) {
 	config := LoadConfig()
-	_, parse_error := Parse(MALFORMED_PACKET, config.AllowedApplications)
+	_, parse_error := ParseRequest(MALFORMED_PACKET, config.AllowedApplications)
 	if parse_error == nil {
 		t.Error("Packet not malformed")
 	}
@@ -55,7 +38,7 @@ func TestMalformedPacket(t *testing.T) {
 
 func TestMalformedHeader(t *testing.T) {
 	config := LoadConfig()
-	_, parse_error := Parse(MALFORMED_HEADER, config.AllowedApplications)
+	_, parse_error := ParseRequest(MALFORMED_HEADER, config.AllowedApplications)
 	if parse_error == nil {
 		t.Error("Header not malformed")
 	}
@@ -63,7 +46,7 @@ func TestMalformedHeader(t *testing.T) {
 
 func TestEmptyTimer(t *testing.T) {
 	config := LoadConfig()
-	_, parse_error := Parse(EMPTY_TIMER, config.AllowedApplications)
+	_, parse_error := ParseRequest(EMPTY_TIMER, config.AllowedApplications)
 	if parse_error == nil {
 		t.Error("Timer is empty")
 	}
@@ -71,7 +54,7 @@ func TestEmptyTimer(t *testing.T) {
 
 func TestParseLog(t *testing.T) {
 	config := LoadConfig()
-	log, parse_error := Parse(TEST_PACKET, config.AllowedApplications)
+	log, parse_error := ParseRequest(TEST_PACKET, config.AllowedApplications)
 	if parse_error != nil {
 		t.Error(parse_error.Error())
 	}
@@ -83,7 +66,7 @@ func TestParseLog(t *testing.T) {
 
 func TestHeaderValidationDisallowedApps(t *testing.T) {
 	config := LoadConfig()
-	_, parse_error := Parse(TEST_DISALLOWED_APPS, config.AllowedApplications)
+	_, parse_error := ParseRequest(TEST_DISALLOWED_APPS, config.AllowedApplications)
 	if parse_error == nil {
 		t.Error("Should be an error because that app is not allowed")
 	}
@@ -93,7 +76,7 @@ func TestHeaderValidationDisallowedApps(t *testing.T) {
 func TestHeaderWithInvalidVerb(t *testing.T) {
 
 	config := LoadConfig()
-	_, parse_error := Parse(TEST_NOT_ALLOWED_VERB, config.AllowedApplications)
+	_, parse_error := ParseRequest(TEST_NOT_ALLOWED_VERB, config.AllowedApplications)
 	if parse_error == nil {
 		t.Error("Should be an error because that app is not allowed")
 	}

@@ -21,12 +21,12 @@ func StartLogger() {
 	config, load_config_error := config.BuildConfig(config_file)
 
 	if load_config_error != nil {
-		panic("error loading config")
+		log.Fatalln("error loding config")
 	}
 
 	listener, listener_error := net.Listen("tcp", ":"+os.Getenv("PORT"))
 	if listener_error != nil {
-		panic("Logger error: " + listener_error.Error())
+		log.Fatalln("Logger error: ", listener_error.Error())
 	}
 
 	defer listener.Close()
@@ -45,9 +45,11 @@ func StartLogger() {
 func handle_socket(socket net.Conn, config config.Config, tree *parser.Tree) {
 	log.Println("New connection accepted: ", socket.RemoteAddr().String())
 	reader := bufio.NewReader(socket)
+
+	id := 0
 	for {
-		id := 0
 		message, message_error := io.ReadAll(reader)
+
 		if message_error != nil {
 			if message_error == io.EOF {
 				break
@@ -55,17 +57,18 @@ func handle_socket(socket net.Conn, config config.Config, tree *parser.Tree) {
 			log.Println("Error on getting message: ", message_error.Error())
 			break
 		}
+
 		if string(message) == "" {
 			break
 		}
 
-		log_message, log_message_error := parser.Parse(string(message), config.AllowedApplications)
-		if log_message_error != nil {
-			log.Println("Error on parsing log: ", log_message_error.Error())
+		request, request_error := parser.ParseRequest(string(message), config.AllowedApplications)
+		if request_error != nil {
+			log.Println("Error on parsing request: ", request_error.Error())
 			break
 		}
 
-		parser.DrainParse(tree, log_message.Message, id)
+		parser.DrainParse(tree, request.Message, id)
 		id++
 	}
 }
