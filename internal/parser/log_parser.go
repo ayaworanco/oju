@@ -43,6 +43,13 @@ func NewNode(label string, data interface{}) *Node {
 	}
 }
 
+func new_log_group(log_event string, log_parameter map[int]string) *LogGroup {
+	return &LogGroup{
+		LogEvent:      log_event,
+		LogParameters: log_parameter,
+	}
+}
+
 func (tree *Tree) AddOrUpdateLengthLayer(log string, id int) {
 	parts := strings.SplitN(log, " ", tree.Depth)
 	length := len(parts)
@@ -101,17 +108,13 @@ func add_log_group(node *Node, log_message string, id int) {
 			break
 		}
 	}
+
 	var log_group *LogGroup
+
 	if first_parameter != "" {
-		log_group = &LogGroup{
-			LogEvent:      log_event,
-			LogParameters: map[int]string{id: first_parameter},
-		}
+		log_group = new_log_group(log_event, map[int]string{id: first_parameter})
 	} else {
-		log_group = &LogGroup{
-			LogEvent:      log_event,
-			LogParameters: map[int]string{},
-		}
+		log_group = new_log_group(log_event, map[int]string{})
 	}
 
 	log_group_id := fmt.Sprintf("log_group_%v", len(strings.Split(log_message, " ")))
@@ -192,6 +195,6 @@ func is_similar(sequence_1, sequence_2 []string) bool {
 	return simSeq >= SIMILARITY_THRESHHOLD
 }
 
-func DrainParse(tree *Tree, log string, id int) {
+func ParseLog(tree *Tree, log string, id int) {
 	tree.AddOrUpdateLengthLayer(log, id)
 }

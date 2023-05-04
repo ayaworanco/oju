@@ -15,12 +15,12 @@ Temperature (43C) exceeds
 Command has run successfully
 `
 
-func TestDrainParsing(t *testing.T) {
+func TestLogParsing(t *testing.T) {
 	tree := NewTree(8)
 
 	logs := strings.Split(TEST_LOG_EASY, "\n")
 	for id, log := range logs {
-		DrainParse(tree, log, id)
+		ParseLog(tree, log, id)
 	}
 
 	log_group := tree.Root.Children["3"].Children["Temperature"].Children["*"].Children["exceeds"].Children["log_group_3"].Data.(*LogGroup)
@@ -34,12 +34,12 @@ func TestDrainParsing(t *testing.T) {
 	}
 }
 
-func TestDrainParsingWithOneLog(t *testing.T) {
+func TestLogParsingWithOneLog(t *testing.T) {
 	tree := NewTree(8)
 
 	logs := strings.Split(TEST_LOG_ONE, "\n")
 	for id, log := range logs {
-		DrainParse(tree, log, id)
+		ParseLog(tree, log, id)
 	}
 
 	log_group := tree.Root.Children["3"].Children["Temperature"].Children["*"].Children["exceeds"].Children["log_group_3"].Data.(*LogGroup)

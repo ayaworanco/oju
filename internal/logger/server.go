@@ -68,7 +68,7 @@ func handle_socket(socket net.Conn, config config.Config, tree *parser.Tree) {
 			break
 		}
 
-		parser.DrainParse(tree, request.Message, id)
+		parser.ParseLog(tree, request.Message, id)
 		id++
 	}
 }
