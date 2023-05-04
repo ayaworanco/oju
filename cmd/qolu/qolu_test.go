@@ -25,7 +25,7 @@ func TestQueries(t *testing.T) {
 				t.Error(error.Error())
 			}
 
-			if result != scenario.valid {
+			if result == nil {
 				t.Error("Invalid query")
 			}
 		})

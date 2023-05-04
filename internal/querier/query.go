@@ -1,7 +1,6 @@
 package querier
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 )
@@ -11,30 +10,15 @@ type QueryTree struct {
 	Children []*Node
 }
 
-type node struct {
-	children []string
-}
-
 type Node struct {
 	Data map[string]interface{}
 }
 
-type TermNode struct {
-	Tokens   []string
-	Variable regexp.Regexp
-	Operator string
-	Value    string
-}
-
-type OperatorNode struct {
-	Operator string
-}
-
-func Parse(query string) (bool, error) {
+func Parse(query string) (*QueryTree, error) {
 	query = strings.Trim(query, "'")
 	tokens := strings.Split(query, " ")
 
-	var nodes []Node
+	var nodes []*Node
 
 	for i := 0; i <= len(tokens); i++ {
 		parts := tokens[:3]
@@ -44,7 +28,7 @@ func Parse(query string) (bool, error) {
 		if contains(logical_operators(), parts[0]) {
 			m["operator"] = parts[0]
 			node.Data = m
-			nodes = append(nodes, node)
+			nodes = append(nodes, &node)
 			new_tokens := tokens[1:]
 			tokens = new_tokens[:len(tokens)-1]
 			continue
@@ -59,13 +43,14 @@ func Parse(query string) (bool, error) {
 			}
 		}
 		node.Data = m
-		nodes = append(nodes, node)
+		nodes = append(nodes, &node)
 		tokens = tokens[3:]
 	}
 
-	fmt.Printf("%#v", nodes)
-
-	return false, nil
+	return &QueryTree{
+		Query:    query,
+		Children: nodes,
+	}, nil
 }
 
 func logical_operators() []string {
