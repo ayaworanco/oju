@@ -18,7 +18,7 @@ export default defineConfig({
         items: [
           { text: 'Installing', link: '/installing' },
           { text: 'Running', link: '/running' },
-          // { text: 'Writing Rules', link: '/writing-rules' }
+          { text: 'Using Qolu', link: '/using-qolu' }
         ]
       }
     ],
