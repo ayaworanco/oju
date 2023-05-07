@@ -23,7 +23,7 @@ func TestLogParsing(t *testing.T) {
 		ParseLog(tree, log, id)
 	}
 
-	log_group := tree.Root.Children["3"].Children["Temperature"].Children["*"].Children["exceeds"].Children["log_group_3"].Data.(*LogGroup)
+	log_group := tree.root.children["3"].children["Temperature"].children["*"].children["exceeds"].children["log_group_3"].data.(*LogGroup)
 
 	if log_group.LogEvent != "Temperature * exceeds" {
 		t.Error("This log should have wildcards")
@@ -42,7 +42,7 @@ func TestLogParsingWithOneLog(t *testing.T) {
 		ParseLog(tree, log, id)
 	}
 
-	log_group := tree.Root.Children["3"].Children["Temperature"].Children["*"].Children["exceeds"].Children["log_group_3"].Data.(*LogGroup)
+	log_group := tree.root.children["3"].children["Temperature"].children["*"].children["exceeds"].children["log_group_3"].data.(*LogGroup)
 	fmt.Printf("%#v", log_group)
 
 	if log_group.LogEvent != "Temperature * exceeds" {
