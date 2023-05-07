@@ -100,9 +100,9 @@ func add_log_group(node *Node, log_message string, id int) {
 	log_event := log_message
 	first_parameter := ""
 
-	for i, seq := range sequence_log_message {
-		if has_digit(seq) {
-			first_parameter = seq
+	for i, token := range sequence_log_message {
+		if has_digit(token) {
+			first_parameter = token
 			sequence_log_message[i] = "*"
 			log_event = strings.Join(sequence_log_message, " ")
 			break
