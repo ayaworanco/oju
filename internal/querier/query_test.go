@@ -8,16 +8,12 @@ func TestValidQuery(t *testing.T) {
 
 	input := "'$ipv4 eq 54.36.149.41 and $status_code eq 200'"
 
-	query_tree, error := Parse(input)
+	result, error := Parse(input, LOG_MESSAGE)
 	if error != nil {
 		t.Error(error.Error())
 	}
 
-	if query_tree == nil {
-		t.Error("Invalid query")
-	}
-
-	if query_tree.Resolve(LOG_MESSAGE) != true {
+	if !result {
 		t.Error("Scenario not valid")
 	}
 }
