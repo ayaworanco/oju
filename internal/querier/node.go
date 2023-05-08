@@ -1,13 +1,16 @@
 package querier
 
-import "regexp"
+import (
+	"oluwoye/internal/parser"
+	"regexp"
+)
 
 type node struct {
 	Data   map[string]interface{}
 	Result bool
 }
 
-func (node *node) set_result(message string) {
+func (node *node) set_result(log_groups []*parser.LogGroup) {
 	regex := node.Data["variable"]
 	operator := node.Data["operator"]
 	value := node.Data["value"]
@@ -16,10 +19,18 @@ func (node *node) set_result(message string) {
 
 	if node.is_term() {
 		expression := regex.(regexp.Regexp)
-		if expression.MatchString(message) {
-			variable_result = expression.FindString(message)
-		} else {
-			node.Result = false
+		// TODO: need to search inside log group params testing this match
+		// if something is matched return the value to variable_result
+		for _, group := range log_groups {
+			for _, parameter := range group.LogParameters {
+				if expression.MatchString(parameter) {
+					variable_result = parameter
+					break
+				} else {
+					node.Result = false
+					break
+				}
+			}
 		}
 		node.Result = logical_operation(variable_result, value, operator.(string))
 	} else {

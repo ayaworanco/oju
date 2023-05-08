@@ -1,6 +1,9 @@
 package querier
 
-import "errors"
+import (
+	"errors"
+	"oluwoye/internal/parser"
+)
 
 type query_tree struct {
 	children []*node
@@ -16,9 +19,9 @@ func new_query_tree(children []*node) (*query_tree, error) {
 	}, nil
 }
 
-func (query_tree *query_tree) resolve(message string) bool {
+func (query_tree *query_tree) resolve(log_groups []*parser.LogGroup) bool {
 	if len(query_tree.children) == 1 {
-		query_tree.children[0].set_result(message)
+		query_tree.children[0].set_result(log_groups)
 		return query_tree.children[0].Result
 	}
 
@@ -39,8 +42,8 @@ func (query_tree *query_tree) resolve(message string) bool {
 
 			operator = parts[1].Data["operator"].(string)
 
-			parts[0].set_result(message)
-			parts[2].set_result(message)
+			parts[0].set_result(log_groups)
+			parts[2].set_result(log_groups)
 
 			final_result = logical_operation(parts[0].Result, parts[2].Result, operator)
 
@@ -48,7 +51,7 @@ func (query_tree *query_tree) resolve(message string) bool {
 			previous_node := query_tree.children[length-2]
 
 			if previous_node.is_operator() && next_node.is_term() {
-				next_node.set_result(message)
+				next_node.set_result(log_groups)
 				final_result = logical_operation(final_result, next_node.Result, previous_node.Data["operator"].(string))
 			}
 			parts = query_tree.children[3:]

@@ -5,11 +5,10 @@ Qolu is the binary that you want to improve your observability on-demand. This w
 > ## Query example
 
 ```sh
-qolu 'when $ipv4 eq 54.36.149.41 and $status_code eq 400'
+qolu '$ipv4 eq 54.36.149.41 and $status_code eq 400'
 ```
 
 Let's break down this example
 
-1. `when` is like the `SELECT` on SQL, you want to set a filtering query when this notation matches. All matches will appears in the terminal.
-2. `$ipv4`, `$status_code` is the super variable that Oluwoye already have mapped with some regular expressions, they only need to match the value in the right-side
-3. `eq`, `and` are logical operators, that already pre-mapped, will be used to check the values in left-side to right-side.
+1. `$ipv4`, `$status_code` is the super variable that Oluwoye already have mapped with some regular expressions, they only need to match the value in the right-side
+2. `eq`, `and` are logical operators, that already pre-mapped, will be used to check the values in left-side to right-side.

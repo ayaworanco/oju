@@ -20,6 +20,10 @@ func NewTree(depth int) *Tree {
 	}
 }
 
+func (tree *Tree) GetRoot() *node {
+	return tree.root
+}
+
 func (tree *Tree) add_or_update_length_layer(log string, id int) {
 	parts := strings.SplitN(log, " ", tree.depth)
 	length := len(parts)

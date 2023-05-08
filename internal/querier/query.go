@@ -1,11 +1,12 @@
 package querier
 
 import (
+	"oluwoye/internal/parser"
 	"regexp"
 	"strings"
 )
 
-func Parse(query string, message string) (bool, error) {
+func Parse(query string, log_groups []*parser.LogGroup) (bool, error) {
 	query = strings.Trim(query, "'")
 	tokens := strings.Split(query, " ")
 
@@ -42,7 +43,7 @@ func Parse(query string, message string) (bool, error) {
 	if tree_error != nil {
 		return false, tree_error
 	}
-	return tree.resolve(message), nil
+	return tree.resolve(log_groups), nil
 
 }
 
