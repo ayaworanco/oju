@@ -33,3 +33,15 @@ func (tree *Tree) add_or_update_length_layer(log string, id int) {
 	}
 	child.add_child(parts, log, id)
 }
+
+func (tree *Tree) GetLogGroups(node *node) []*LogGroup {
+	var log_groups []*LogGroup
+	if len(node.children) == 0 {
+		log_groups = append(log_groups, node.data.(*LogGroup))
+	} else {
+		for _, child := range node.children {
+			log_groups = append(log_groups, tree.GetLogGroups(child)[0])
+		}
+	}
+	return log_groups
+}
