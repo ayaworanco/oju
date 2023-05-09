@@ -20,13 +20,12 @@ func (node *node) set_result(log_groups []*parser.LogGroup) {
 	if node.is_term() {
 		expression := regex.(regexp.Regexp)
 		for _, group := range log_groups {
-			for _, parameter := range group.LogParameters {
-				if expression.MatchString(parameter) {
-					variable_result = parameter
-					break
-				} else {
-					node.Result = false
-					break
+			for _, parameters := range group.LogParameters {
+				for _, parameter := range parameters {
+					if expression.MatchString(parameter) {
+						variable_result = parameter
+						break
+					}
 				}
 			}
 		}

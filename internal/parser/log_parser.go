@@ -35,13 +35,14 @@ func has_digit(token string) bool {
 	return false
 }
 
-func remove_unique_simbol(tokens []string) []string {
-	for index, token := range tokens {
-		if is_unique_symbol(token) {
-			return append(tokens[:index], tokens[index+1:]...)
+func remount_without_symbols(tokens []string) []string {
+	var new_tokens []string
+	for _, token := range tokens {
+		if !is_unique_symbol(token) {
+			new_tokens = append(new_tokens, token)
 		}
 	}
-	return tokens
+	return new_tokens
 }
 
 func is_unique_symbol(token string) bool {
@@ -55,7 +56,8 @@ func is_unique_symbol(token string) bool {
 	return false
 }
 
-func get_parameter_by_similarity(sequence_1, sequence_2 []string) string {
+func get_parameters_by_similarity(sequence_1, sequence_2 []string) []string {
+	var parameters []string
 	n := len(sequence_1)
 	if len(sequence_2) < n {
 		n = len(sequence_2)
@@ -63,10 +65,10 @@ func get_parameter_by_similarity(sequence_1, sequence_2 []string) string {
 
 	for i := 0; i < n; i++ {
 		if sequence_1[i] != sequence_2[i] {
-			return sequence_1[i]
+			parameters = append(parameters, sequence_1[i])
 		}
 	}
-	return ""
+	return parameters
 }
 
 func is_similar(sequence_1, sequence_2 []string) bool {

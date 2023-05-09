@@ -66,6 +66,8 @@ func contains(elements []string, value string) bool {
 
 func logical_operation(value1, value2 interface{}, operator string) bool {
 	switch operator {
+	case "and":
+		return value1.(bool) && value2.(bool)
 	case "eq":
 		return value1 == value2
 	case "diff":

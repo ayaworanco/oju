@@ -7,13 +7,13 @@ import (
 
 type LogGroup struct {
 	LogEvent      string
-	LogParameters map[int]string
+	LogParameters map[int][]string
 }
 
-func new_log_group(log_event string, log_parameter map[int]string) *LogGroup {
+func new_log_group(log_event string, log_parameters map[int][]string) *LogGroup {
 	return &LogGroup{
 		LogEvent:      log_event,
-		LogParameters: log_parameter,
+		LogParameters: log_parameters,
 	}
 }
 
@@ -21,23 +21,22 @@ func add_log_group(node *node, log_message string, id int) {
 	sequence_log_message := strings.Split(log_message, " ")
 
 	log_event := log_message
-	first_parameter := ""
+	var first_parameters []string
 
-	for i, token := range sequence_log_message {
+	for index, token := range sequence_log_message {
 		if has_digit(token) {
-			first_parameter = token
-			sequence_log_message[i] = "*"
+			first_parameters = append(first_parameters, token)
+			sequence_log_message[index] = "*"
 			log_event = strings.Join(sequence_log_message, " ")
-			break
 		}
 	}
 
 	var log_group *LogGroup
 
-	if first_parameter != "" {
-		log_group = new_log_group(log_event, map[int]string{id: first_parameter})
+	if len(first_parameters) > 0 {
+		log_group = new_log_group(log_event, map[int][]string{id: first_parameters})
 	} else {
-		log_group = new_log_group(log_event, map[int]string{})
+		log_group = new_log_group(log_event, map[int][]string{})
 	}
 
 	log_group_id := fmt.Sprintf("log_group_%v", len(strings.Split(log_message, " ")))
@@ -53,9 +52,9 @@ func add_log_group(node *node, log_message string, id int) {
 	sequence_2 := strings.Split(found_log_group.LogEvent, " ")
 
 	if is_similar(sequence_1, sequence_2) {
-		parameter := get_parameter_by_similarity(sequence_1, sequence_2)
-		if parameter != "" {
-			found_log_group.LogParameters[id] = parameter
+		parameters := get_parameters_by_similarity(sequence_1, sequence_2)
+		if len(parameters) > 0 {
+			found_log_group.LogParameters[id] = append(found_log_group.LogParameters[id], parameters...)
 		}
 		update_log_event(found_log_group, log_message)
 	}
