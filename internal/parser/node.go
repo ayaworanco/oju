@@ -29,6 +29,8 @@ func (node *node) add_child(parts []string, log_message string, id int) {
 		path = parts[:len(parts)-1][0]
 	}
 
+	parts = remove_unique_simbol(parts)
+
 	if has_digit(path) {
 		path = "*"
 	}

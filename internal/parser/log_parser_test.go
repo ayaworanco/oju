@@ -53,7 +53,7 @@ func TestLogParsingWithOneLog(t *testing.T) {
 }
 
 func TestLogMessageGroup(t *testing.T) {
-	tree := NewTree(8)
+	tree := NewTree(10)
 
 	logs := strings.Split(TEST_LOG_EASY, "\n")
 	for id, log := range logs {

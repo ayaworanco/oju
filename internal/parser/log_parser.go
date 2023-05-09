@@ -35,6 +35,26 @@ func has_digit(token string) bool {
 	return false
 }
 
+func remove_unique_simbol(tokens []string) []string {
+	for index, token := range tokens {
+		if is_unique_symbol(token) {
+			return append(tokens[:index], tokens[index+1:]...)
+		}
+	}
+	return tokens
+}
+
+func is_unique_symbol(token string) bool {
+	if len(token) == 1 {
+		contains_hyphen := strings.Contains(token, "-")
+		character := []rune(token)[0]
+		if contains_hyphen || unicode.IsSymbol(character) {
+			return true
+		}
+	}
+	return false
+}
+
 func get_parameter_by_similarity(sequence_1, sequence_2 []string) string {
 	n := len(sequence_1)
 	if len(sequence_2) < n {

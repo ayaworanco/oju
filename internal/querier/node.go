@@ -19,8 +19,6 @@ func (node *node) set_result(log_groups []*parser.LogGroup) {
 
 	if node.is_term() {
 		expression := regex.(regexp.Regexp)
-		// TODO: need to search inside log group params testing this match
-		// if something is matched return the value to variable_result
 		for _, group := range log_groups {
 			for _, parameter := range group.LogParameters {
 				if expression.MatchString(parameter) {
