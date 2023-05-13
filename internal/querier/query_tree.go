@@ -32,31 +32,65 @@ func (query_tree *query_tree) resolve(log_groups []*parser.LogGroup) bool {
 	if len(query_tree.children) > 2 {
 		parts := query_tree.children[:3]
 		var final_result bool
+		is_final_result_setted := false
 		var operator string
 
+		length := len(parts)
 		for range parts {
-			length := len(parts)
-			if length == 0 {
+			if len(parts) == 0 {
 				break
 			}
 
-			operator = parts[1].Data["operator"].(string)
+			operator = get_operator(parts)
+			set_term_result(parts, log_groups)
 
-			parts[0].set_result(log_groups)
-			parts[2].set_result(log_groups)
+			if is_final_result_setted {
+				next_node := query_tree.children[length-1]
+				previous_node := query_tree.children[length-2]
 
-			final_result = logical_operation(parts[0].Result, parts[2].Result, operator)
+				if previous_node.is_operator() && next_node.is_term() {
+					next_node.set_result(log_groups)
+					final_result = logical_operation(final_result, next_node.Result, previous_node.Data["operator"].(string))
+				}
 
-			next_node := query_tree.children[length-1]
-			previous_node := query_tree.children[length-2]
+				if length >= 3 {
+					parts = parts[2:]
+				} else {
+					parts = parts[3:]
+				}
 
-			if previous_node.is_operator() && next_node.is_term() {
-				next_node.set_result(log_groups)
-				final_result = logical_operation(final_result, next_node.Result, previous_node.Data["operator"].(string))
+			} else {
+				final_result = logical_operation(parts[0].Result, parts[2].Result, operator)
+				is_final_result_setted = true
+				next_node := query_tree.children[length-1]
+				previous_node := query_tree.children[length-2]
+
+				if previous_node.is_operator() && next_node.is_term() {
+					next_node.set_result(log_groups)
+					final_result = logical_operation(final_result, next_node.Result, previous_node.Data["operator"].(string))
+				}
+				parts = query_tree.children[3:]
 			}
-			parts = query_tree.children[3:]
+
 		}
 		return final_result
 	}
 	return false
+}
+
+func set_term_result(parts []*node, log_groups []*parser.LogGroup) {
+	for _, node := range parts {
+		if node.is_term() {
+			node.set_result(log_groups)
+		}
+	}
+}
+
+func get_operator(parts []*node) string {
+	for _, node := range parts {
+		if node.is_operator() {
+			return node.Data["operator"].(string)
+		}
+	}
+	return ""
 }

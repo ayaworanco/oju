@@ -1,13 +1,32 @@
 package querier
 
 import (
-	"oluwoye/internal/parser"
 	"os"
 	"strings"
 	"testing"
+
+	"oluwoye/internal/parser"
 )
 
-func TestQuery(t *testing.T) {
+func init_test_suite() []*parser.LogGroup {
+	tree := parser.NewTree(10)
+
+	file, _ := os.ReadFile("testdata/query_test.log")
+
+	log := string(file)
+	logs := strings.Split(log, "\n")
+
+	for id, registry := range logs {
+		parser.ParseLog(tree, registry, id)
+	}
+
+	log_groups := tree.GetLogGroups(tree.GetRoot())
+	return log_groups
+}
+
+func TestInvalidQueries(t *testing.T) {
+	log_groups := init_test_suite()
+
 	tests := []struct {
 		description string
 		input       string
@@ -23,6 +42,31 @@ func TestQuery(t *testing.T) {
 			input:       "'$ipv4 eq 54.36.149.41 and'",
 			is_valid:    false,
 		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.description, func(t *testing.T) {
+			result, error := Parse(test.input, log_groups)
+
+			if !test.is_valid && error == nil {
+				t.Error(error.Error())
+			}
+
+			if test.is_valid && result {
+				t.Error("Scenario not valid")
+			}
+		})
+	}
+}
+
+func TestValidQuery(t *testing.T) {
+	log_groups := init_test_suite()
+
+	tests := []struct {
+		description string
+		input       string
+		is_valid    bool
+	}{
 		{
 			description: "Valid query with one term",
 			input:       "'$ipv4 eq 54.36.149.41'",
@@ -40,31 +84,15 @@ func TestQuery(t *testing.T) {
 		},
 	}
 
-	tree := parser.NewTree(10)
-
-	file, file_error := os.ReadFile("testdata/query_test.log")
-	if file_error != nil {
-		t.Error(file_error.Error())
-	}
-
-	log := string(file)
-	logs := strings.Split(log, "\n")
-
-	for id, registry := range logs {
-		parser.ParseLog(tree, registry, id)
-	}
-
-	log_groups := tree.GetLogGroups(tree.GetRoot())
-
 	for _, test := range tests {
 		t.Run(test.description, func(t *testing.T) {
 			result, error := Parse(test.input, log_groups)
 
-			if error != nil {
+			if !test.is_valid && error == nil {
 				t.Error(error.Error())
 			}
 
-			if test.is_valid && result {
+			if !test.is_valid && !result {
 				t.Error("Scenario not valid")
 			}
 		})

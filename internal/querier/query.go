@@ -1,6 +1,7 @@
 package querier
 
 import (
+	"errors"
 	"oluwoye/internal/parser"
 	"regexp"
 	"strings"
@@ -10,9 +11,20 @@ func Parse(query string, log_groups []*parser.LogGroup) (bool, error) {
 	query = strings.Trim(query, "'")
 	tokens := strings.Split(query, " ")
 
+	if contains(logical_operators(), tokens[0]) {
+		return false, errors.New("first token is logical")
+	}
+
 	var nodes []*node
 
-	for i := 0; i <= len(tokens); i++ {
+	for range tokens {
+		if len(tokens) == 0 {
+			break
+		}
+
+		if len(tokens) == 1 && contains(logical_operators(), tokens[0]) {
+			return false, errors.New("last token is logical")
+		}
 		parts := tokens[:3]
 		var node node
 		m := make(map[string]interface{})
@@ -52,6 +64,7 @@ func logical_operators() []string {
 		"and",
 		"or",
 		"eq",
+		"diff",
 	}
 }
 
