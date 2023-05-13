@@ -8,22 +8,6 @@ import (
 	"oluwoye/internal/parser"
 )
 
-func init_test_suite() []*parser.LogGroup {
-	tree := parser.NewTree(10)
-
-	file, _ := os.ReadFile("testdata/query_test.log")
-
-	log := string(file)
-	logs := strings.Split(log, "\n")
-
-	for id, registry := range logs {
-		parser.ParseLog(tree, registry, id)
-	}
-
-	log_groups := tree.GetLogGroups(tree.GetRoot())
-	return log_groups
-}
-
 func TestInvalidQueries(t *testing.T) {
 	log_groups := init_test_suite()
 
@@ -97,4 +81,20 @@ func TestValidQuery(t *testing.T) {
 			}
 		})
 	}
+}
+
+func init_test_suite() []*parser.LogGroup {
+	tree := parser.NewTree(10)
+
+	file, _ := os.ReadFile("testdata/query_test.log")
+
+	log := string(file)
+	logs := strings.Split(log, "\n")
+
+	for id, registry := range logs {
+		parser.ParseLog(tree, registry, id)
+	}
+
+	log_groups := tree.GetLogGroups(tree.GetRoot())
+	return log_groups
 }
