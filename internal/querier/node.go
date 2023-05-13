@@ -1,8 +1,9 @@
 package querier
 
 import (
-	"oluwoye/internal/parser"
 	"regexp"
+
+	"oluwoye/internal/parser"
 )
 
 type node struct {
