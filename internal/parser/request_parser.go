@@ -2,8 +2,9 @@ package parser
 
 import (
 	"errors"
-	"oluwoye/internal/config"
 	"strings"
+
+	"oluwoye/internal/config"
 )
 
 func ParseRequest(packet string, allowed_applications []config.Application) (Request, error) {
@@ -29,5 +30,4 @@ func ParseRequest(packet string, allowed_applications []config.Application) (Req
 		Timer:   timer,
 		Message: message,
 	}, nil
-
 }

@@ -2,8 +2,11 @@ package parser
 
 import (
 	"errors"
-	"oluwoye/internal/config"
+	"fmt"
 	"strings"
+	"time"
+
+	"oluwoye/internal/config"
 )
 
 type Request struct {
@@ -14,6 +17,37 @@ type Request struct {
 
 type Header struct {
 	Verb, AppKey, Version string
+}
+
+func (header *Header) String() string {
+	return fmt.Sprintf("%v %v %v", header.Verb, header.AppKey, header.Version)
+}
+
+func (request *Request) String() string {
+	return fmt.Sprintf("%v\n%v\n%v", request.Header.String(), request.Timer, request.Message)
+}
+
+func NewRequest(head, message string) (Request, error) {
+	parts := strings.Split(head, " ")
+	if len(parts) != 3 {
+		return Request{}, errors.New("malformed header")
+	}
+
+	verb := parts[0]
+	app_key := parts[1]
+	version := parts[2]
+
+	if !is_verb_allowed(verb) {
+		return Request{}, errors.New("verb not allowed")
+	}
+
+	header := Header{Verb: verb, AppKey: app_key, Version: version}
+
+	return Request{
+		Header:  header,
+		Timer:   time.Now().String(),
+		Message: message,
+	}, nil
 }
 
 func NewHeader(head string, allowed_applications []config.Application) (Header, error) {
@@ -40,7 +74,7 @@ func NewHeader(head string, allowed_applications []config.Application) (Header, 
 func is_verb_allowed(verb string) bool {
 	allowed := []string{
 		"LOG",
-		"QUERY",
+		"WATCH",
 	}
 
 	for _, allowed_verb := range allowed {

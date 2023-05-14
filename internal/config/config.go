@@ -28,10 +28,10 @@ func BuildConfig(config_file []byte) (Config, error) {
 
 func LoadConfigFile() ([]byte, error) {
 	var config_file string
-	config_file = os.Getenv("CONFIG_YAML_PATH")
+	config_file = os.Getenv("CONFIG_JSON_PATH")
 
 	if config_file == "" {
-		config_file = "./config.yaml"
+		config_file = "./config.json"
 	}
 
 	file, read_error := os.ReadFile(config_file)

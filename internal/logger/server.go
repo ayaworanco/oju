@@ -2,12 +2,14 @@ package logger
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"log"
 	"net"
+	"os"
+
 	"oluwoye/internal/config"
 	"oluwoye/internal/parser"
-	"os"
 )
 
 func StartLogger() {
@@ -38,11 +40,11 @@ func StartLogger() {
 			log.Println("Socket Error: ", socket_error.Error())
 		}
 
-		go handle_socket(socket, config, tree)
+		go handle_incoming_message(socket, config, tree)
 	}
 }
 
-func handle_socket(socket net.Conn, config config.Config, tree *parser.Tree) {
+func handle_incoming_message(socket net.Conn, config config.Config, tree *parser.Tree) {
 	log.Println("New connection accepted: ", socket.RemoteAddr().String())
 	reader := bufio.NewReader(socket)
 
@@ -61,14 +63,23 @@ func handle_socket(socket net.Conn, config config.Config, tree *parser.Tree) {
 		if string(message) == "" {
 			break
 		}
-
 		request, request_error := parser.ParseRequest(string(message), config.AllowedApplications)
 		if request_error != nil {
 			log.Println("Error on parsing request: ", request_error.Error())
 			break
 		}
 
-		parser.ParseLog(tree, request.Message, id)
-		id++
+		switch request.Header.Verb {
+		case "LOG":
+			parser.ParseLog(tree, request.Message, id)
+			id++
+			break
+		case "WATCH":
+			// install watcher
+			fmt.Println("Installing watcher")
+		default:
+
+		}
+
 	}
 }

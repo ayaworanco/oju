@@ -2,9 +2,10 @@ package querier
 
 import (
 	"errors"
-	"oluwoye/internal/parser"
 	"regexp"
 	"strings"
+
+	"oluwoye/internal/parser"
 )
 
 func Parse(query string, log_groups []*parser.LogGroup) (bool, error) {
@@ -56,7 +57,6 @@ func Parse(query string, log_groups []*parser.LogGroup) (bool, error) {
 		return false, tree_error
 	}
 	return tree.resolve(log_groups), nil
-
 }
 
 func logical_operators() []string {
