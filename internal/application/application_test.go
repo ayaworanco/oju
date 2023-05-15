@@ -15,7 +15,7 @@ func TestStartProcessAndSendLog(t *testing.T) {
 		Payload: "Temperature (43C) exceeds",
 	}
 
-	SendMessage(app, message)
+	app.SendMessage(message)
 	groups := tree.GetLogGroups(tree.GetRoot())
 
 	if len(groups) == 0 {

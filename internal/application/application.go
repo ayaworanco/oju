@@ -2,7 +2,6 @@ package application
 
 import (
 	"fmt"
-
 	"oluwoye/internal/parser"
 )
 
