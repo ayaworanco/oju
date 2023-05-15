@@ -41,15 +41,10 @@ func (tree *Tree) add_or_update_length_layer(log string, id int) {
 func (tree *Tree) GetLogGroups(node *node) []*LogGroup {
 	var log_groups []*LogGroup
 
-	if node == nil {
-		return log_groups
-	}
+	group, is_log_group := node.data.(*LogGroup)
 
-	if len(node.children) == 0 {
-		group, ok := node.data.(*LogGroup) // check if thi is a log group
-		if ok {
-			log_groups = append(log_groups, group)
-		}
+	if is_log_group {
+		log_groups = append(log_groups, group)
 	} else {
 		for _, child := range node.children {
 			log_groups = append(log_groups, tree.GetLogGroups(child)[0])

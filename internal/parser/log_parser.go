@@ -5,8 +5,10 @@ import (
 	"unicode"
 )
 
-const SIMILARITY_THRESHHOLD = 0.6
-const MAX_CHILD = 100
+const (
+	SIMILARITY_THRESHHOLD = 0.6
+	MAX_CHILD             = 100
+)
 
 func update_log_event(log_group *LogGroup, log_message string) {
 	sequence_log_event := strings.Split(log_group.LogEvent, " ")
