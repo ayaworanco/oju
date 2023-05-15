@@ -14,6 +14,8 @@ import (
 
 func StartLogger() {
 	config_file, load_error := config.LoadConfigFile()
+
+	// FIXME: there is needed a parse tree to each one of applications
 	tree := parser.NewTree(8)
 
 	if load_error != nil {
@@ -78,7 +80,6 @@ func handle_incoming_message(socket net.Conn, config config.Config, tree *parser
 			// install watcher
 			fmt.Println("Installing watcher")
 		default:
-
 		}
 
 	}
