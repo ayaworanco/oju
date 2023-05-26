@@ -1,9 +1,9 @@
 package main
 
 import (
-	"oju/internal/logger"
+	"oju/internal/server"
 )
 
 func main() {
-	logger.StartLogger()
+	server.Start()
 }

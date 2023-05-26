@@ -1,4 +1,4 @@
-package logger
+package server
 
 import (
 	"bufio"
@@ -10,9 +10,10 @@ import (
 
 	"oju/internal/config"
 	"oju/internal/parser"
+	"oju/internal/requester"
 )
 
-func StartLogger() {
+func Start() {
 	config_file, load_error := config.LoadConfigFile()
 
 	// FIXME: there is needed a parse tree to each one of applications
@@ -65,7 +66,7 @@ func handle_incoming_message(socket net.Conn, config config.Config, tree *parser
 		if string(message) == "" {
 			break
 		}
-		request, request_error := parser.ParseRequest(string(message), config.AllowedApplications)
+		request, request_error := requester.Parse(string(message), config.AllowedApplications)
 		if request_error != nil {
 			log.Println("Error on parsing request: ", request_error.Error())
 			break

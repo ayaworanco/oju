@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "Oju"
-  text: "A streaming tracing and logger watcher for your applications"
+  text: "Watch everything with simplicity"
   image:
     src: /Oju.png
     alt: Oju
