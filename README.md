@@ -1,16 +1,16 @@
 <center> <h1>
-  Oluwoye
+  Oju
   </h1>  </center>
 
 <p align="center">
-  <img src="images/cowries.png" />
+  <img src="images/Oju.png" />
 </p>
 
-A stream processor that can be used for log analysis and network security monitoring based on rule system.
+A stream tracing and logger that can be used for all your applications in one server.
 
 > ### Table of contents
 
-- [Docs](https://roqueando.github.io/oluwoye/)
+- [Docs](https://roqueando.github.io/oju/)
 - [Contributing](#contributing)
 - [License](#license)
 

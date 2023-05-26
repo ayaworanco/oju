@@ -2,7 +2,8 @@ package application
 
 import (
 	"fmt"
-	"oluwoye/internal/parser"
+
+	"oju/internal/parser"
 )
 
 type Message struct {

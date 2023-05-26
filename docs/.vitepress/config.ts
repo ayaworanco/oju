@@ -2,9 +2,9 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Oluwoye",
-  description: "A rule-based network and log monitoring system",
-  base: "/oluwoye/",
+  title: "Oju",
+  description: "A streaming tracing and logger watcher for your applications",
+  base: "/oju/",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
@@ -18,13 +18,13 @@ export default defineConfig({
         items: [
           { text: 'Installing', link: '/installing' },
           { text: 'Running', link: '/running' },
-          { text: 'Using Qolu', link: '/using-qolu' }
+          { text: 'Using Qolu', link: '/using-qoju' }
         ]
       }
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/roqueando/oluwoye' }
+      { icon: 'github', link: 'https://github.com/roqueando/oju' }
     ]
   }
 })

@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"oluwoye/internal/parser"
+	"oju/internal/parser"
 )
 
 func TestInvalidQueries(t *testing.T) {

@@ -3,7 +3,7 @@ package application
 import (
 	"testing"
 
-	"oluwoye/internal/parser"
+	"oju/internal/parser"
 )
 
 func TestStartProcessAndSendLog(t *testing.T) {

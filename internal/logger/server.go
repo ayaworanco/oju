@@ -8,8 +8,8 @@ import (
 	"net"
 	"os"
 
-	"oluwoye/internal/config"
-	"oluwoye/internal/parser"
+	"oju/internal/config"
+	"oju/internal/parser"
 )
 
 func StartLogger() {

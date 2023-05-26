@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"oluwoye/internal/parser"
+	"oju/internal/parser"
 )
 
 func Parse(query string, log_groups []*parser.LogGroup) (bool, error) {

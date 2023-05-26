@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"oluwoye/internal/config"
+	"oju/internal/config"
 )
 
 type Request struct {

@@ -2,7 +2,8 @@ package querier
 
 import (
 	"errors"
-	"oluwoye/internal/parser"
+
+	"oju/internal/parser"
 )
 
 type query_tree struct {

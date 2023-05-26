@@ -3,7 +3,7 @@ package querier
 import (
 	"regexp"
 
-	"oluwoye/internal/parser"
+	"oju/internal/parser"
 )
 
 type node struct {

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"oluwoye/internal/config"
+	"oju/internal/config"
 )
 
 func ParseRequest(packet string, allowed_applications []config.Application) (Request, error) {

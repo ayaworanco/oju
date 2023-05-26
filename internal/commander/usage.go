@@ -47,19 +47,19 @@ const USAGE = `
                                                                                                                                                                                                         
                                                                                                                                                                                                         
 
-A simple query tool for interacting with Oluwoye server
+A simple query tool for interacting with Oju server
 `
 
 const version_usage = `Show the application version
 
-Usage: oju version`
+Usage: qoju version`
 
-const watch_usage = `Watch a query in the Oluwoye server
+const watch_usage = `Watch a query in the Oju server
 
 Options:
 	--host=127.0.0.1:8080
 	--app=ABC@123
-Usage: oju watch [query] [--host]
+Usage: qoju watch [query] [--host]
 	Example:
 	oju watch '$ipv4 eq 127.0.0.1 and $status_code eq 200' --host 127.0.0.1:8080 --app ABC@123`
 

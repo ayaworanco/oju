@@ -6,7 +6,7 @@ import (
 	"net"
 	"os"
 
-	"oluwoye/internal/parser"
+	"oju/internal/parser"
 )
 
 var (

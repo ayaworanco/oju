@@ -3,22 +3,22 @@
 layout: home
 
 hero:
-  name: "Oluwoye"
-  text: "A rule-based network and log monitoring system"
+  name: "Oju"
+  text: "A streaming tracing and logger watcher for your applications"
   image:
-    src: /cowries.png
-    alt: Cowries
+    src: /Oju.png
+    alt: Oju
   actions:
     - theme: alt
       text: Get Started
       link: /installing
 
 features:
-  - title: Rule System
-    details: By a yaml file with some rules you can create alerts for your logs
+  - title: Streaming 
+    details: All logs and tracing will be streamed from your applications to oju 
   - title: Structuring & Querying
     details: All executed rules will structure a log and save for late queries
-  - title: OluQ
-    details: Comming soon
+  - title: Qoju
+    details: A query system to be used with oju is comming soon :D
 ---
 
