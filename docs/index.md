@@ -6,7 +6,7 @@ hero:
   name: "Oju"
   text: "Watch everything with simplicity"
   image:
-    src: /Oju.png
+    src: /Oju_eye.png
     alt: Oju
   actions:
     - theme: alt
