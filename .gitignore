@@ -9,3 +9,4 @@ docs/.vitepress/cache
 build/*
 olu
 config.json
+*.DS_Store
