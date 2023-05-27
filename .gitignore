@@ -7,3 +7,5 @@ node_modules
 docs/.vitepress/dist
 docs/.vitepress/cache
 build/*
+olu
+config.json

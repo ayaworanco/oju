@@ -5,13 +5,18 @@ import (
 )
 
 func TestReturnAllowedApplication(t *testing.T) {
-	config_yaml := `
-allowed_applications:
-  - name: "worker"
-    app_key: "37F129EF-687E-47AC-B0C4-CBF6516B37ED"
+	config_json := `
+{
+	"allowed_applications": [
+	{
+	"name": "worker",
+	"app_key": "37F129EF-687E-47AC-B0C4-CBF6516B37ED"
+	}
+	]
+}
 `
 
-	config, load_error := BuildConfig([]byte(config_yaml))
+	config, load_error := BuildConfig([]byte(config_json))
 	if load_error != nil {
 		t.Error(load_error)
 	}

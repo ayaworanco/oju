@@ -1,25 +1,24 @@
 package config
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
-
-	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
-	AllowedApplications []Application `yaml:"allowed_applications"`
+	AllowedApplications []Application `json:"allowed_applications"`
 }
 
 type Application struct {
-	Name   string `yaml:"name"`
-	AppKey string `yaml:"app_key"`
+	Name   string `json:"name"`
+	AppKey string `json:"app_key"`
 }
 
 func BuildConfig(config_file []byte) (Config, error) {
 	var config Config
 
-	err := yaml.Unmarshal(config_file, &config)
+	err := json.Unmarshal(config_file, &config)
 	if err != nil {
 		return Config{}, err
 	}
@@ -29,10 +28,10 @@ func BuildConfig(config_file []byte) (Config, error) {
 
 func LoadConfigFile() ([]byte, error) {
 	var config_file string
-	config_file = os.Getenv("CONFIG_YAML_PATH")
+	config_file = os.Getenv("CONFIG_JSON_PATH")
 
 	if config_file == "" {
-		config_file = "./config.yaml"
+		config_file = "./config.json"
 	}
 
 	file, read_error := os.ReadFile(config_file)
