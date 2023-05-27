@@ -5,19 +5,21 @@ import (
 	"strings"
 )
 
+// TODO: generate a unique identifier md5 based on time
+
 type LogGroup struct {
 	LogEvent      string
-	LogParameters map[int][]string
+	LogParameters map[string][]string
 }
 
-func new_log_group(log_event string, log_parameters map[int][]string) *LogGroup {
+func new_log_group(log_event string, log_parameters map[string][]string) *LogGroup {
 	return &LogGroup{
 		LogEvent:      log_event,
 		LogParameters: log_parameters,
 	}
 }
 
-func add_log_group(node *node, log_message string, id int) {
+func add_log_group(node *node, log_message string, id string) {
 	sequence_log_message := strings.Split(log_message, " ")
 
 	log_event := log_message
@@ -34,9 +36,9 @@ func add_log_group(node *node, log_message string, id int) {
 	var log_group *LogGroup
 
 	if len(first_parameters) > 0 {
-		log_group = new_log_group(log_event, map[int][]string{id: first_parameters})
+		log_group = new_log_group(log_event, map[string][]string{id: first_parameters})
 	} else {
-		log_group = new_log_group(log_event, map[int][]string{})
+		log_group = new_log_group(log_event, map[string][]string{})
 	}
 
 	log_group_id := fmt.Sprintf("log_group_%v", len(strings.Split(log_message, " ")))

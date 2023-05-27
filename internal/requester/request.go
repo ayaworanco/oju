@@ -62,19 +62,6 @@ func NewRequest(head, message string, allowed_applications []config.Application)
 	}, nil
 }
 
-func NewHeader(head string) (Header, error) {
-	parts := strings.Split(head, " ")
-	if len(parts) != 3 {
-		return Header{}, errors.New(ERROR_MALFORMED_HEADER)
-	}
-
-	verb := parts[0]
-	app_key := parts[1]
-	version := parts[2]
-
-	return Header{Verb: verb, AppKey: app_key, Version: version}, nil
-}
-
 func Parse(packet string, allowed_applications []config.Application) (Request, error) {
 	parts := strings.Split(packet, "\n")
 	if len(parts) != 2 {

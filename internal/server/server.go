@@ -51,7 +51,6 @@ func handle_incoming_message(socket net.Conn, config config.Config, tree *parser
 	log.Println("New connection accepted: ", socket.RemoteAddr().String())
 	reader := bufio.NewReader(socket)
 
-	id := 0
 	for {
 		message, message_error := io.ReadAll(reader)
 
@@ -74,8 +73,7 @@ func handle_incoming_message(socket net.Conn, config config.Config, tree *parser
 
 		switch request.Header.Verb {
 		case "LOG":
-			parser.ParseLog(tree, request.Message, id)
-			id++
+			parser.ParseLog(tree, request.Message)
 			break
 		case "WATCH":
 			// install watcher

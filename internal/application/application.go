@@ -18,11 +18,8 @@ type Application struct {
 	mailbox     chan Message
 }
 
-/*
-This represents an application with your own parse tree
-app key and watch query (that I will try to update to more than one queries to be watching)
-*/
-func StartApplication(tree *parser.Tree, key, watch_query string) *Application {
+// Starts application by running the actor model in a loop with your mailbox
+func Start(tree *parser.Tree, key, watch_query string) *Application {
 	mailbox := make(chan Message, 0) // maybe a []chan message?
 	application := &Application{
 		tree:        tree,
@@ -44,17 +41,15 @@ func (application *Application) run() {
 	for {
 		select {
 		case msg := <-application.mailbox:
-			run_msg(application, msg)
+			application.run_msg(msg)
 		}
 	}
 }
 
-func run_msg(application *Application, msg Message) {
+func (application *Application) run_msg(msg Message) {
 	switch msg.Type {
 	case "LOG":
-		// TODO: need to do the parse correctly
-		// this Id need to be always new like an uuid
-		parser.ParseLog(application.tree, msg.Payload.(string), 1) // FIXME: add an uuid here as a unique
+		parser.ParseLog(application.tree, msg.Payload.(string))
 		break
 	case "WATCH":
 		fmt.Println("this is a watch")

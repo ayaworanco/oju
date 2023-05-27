@@ -1,8 +1,11 @@
 package parser
 
 import (
+	"crypto/md5"
 	"fmt"
+	"io"
 	"strings"
+	"time"
 )
 
 type Tree struct {
@@ -24,7 +27,14 @@ func (tree *Tree) GetRoot() *node {
 	return tree.root
 }
 
-func (tree *Tree) add_or_update_length_layer(log string, id int) {
+func generate_id() string {
+	hash := md5.New()
+	io.WriteString(hash, time.Now().String())
+	return string(hash.Sum(nil))
+}
+
+func (tree *Tree) add_or_update_length_layer(log string) {
+	id := generate_id()
 	parts := strings.SplitN(log, " ", tree.depth)
 	length := len(parts)
 	label := fmt.Sprint(length)

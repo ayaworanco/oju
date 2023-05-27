@@ -89,6 +89,6 @@ func is_similar(sequence_1, sequence_2 []string) bool {
 	return simSeq >= SIMILARITY_THRESHHOLD
 }
 
-func ParseLog(tree *Tree, log string, id int) {
-	tree.add_or_update_length_layer(log, id)
+func ParseLog(tree *Tree, log string) {
+	tree.add_or_update_length_layer(log)
 }

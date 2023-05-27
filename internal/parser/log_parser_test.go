@@ -18,8 +18,8 @@ func TestLogParsing(t *testing.T) {
 	tree := NewTree(8)
 
 	logs := strings.Split(TEST_LOG_EASY, "\n")
-	for id, log := range logs {
-		ParseLog(tree, log, id)
+	for _, log := range logs {
+		ParseLog(tree, log)
 	}
 
 	log_group := tree.root.children["3"].children["Temperature"].children["*"].children["exceeds"].children["log_group_3"].data.(*LogGroup)
@@ -37,8 +37,8 @@ func TestLogParsingWithOneLog(t *testing.T) {
 	tree := NewTree(8)
 
 	logs := strings.Split(TEST_LOG_ONE, "\n")
-	for id, log := range logs {
-		ParseLog(tree, log, id)
+	for _, log := range logs {
+		ParseLog(tree, log)
 	}
 
 	log_group := tree.root.children["3"].children["Temperature"].children["*"].children["exceeds"].children["log_group_3"].data.(*LogGroup)
@@ -56,13 +56,12 @@ func TestLogMessageGroup(t *testing.T) {
 	tree := NewTree(10)
 
 	logs := strings.Split(TEST_LOG_EASY, "\n")
-	for id, log := range logs {
-		ParseLog(tree, log, id)
+	for _, log := range logs {
+		ParseLog(tree, log)
 	}
 
 	log_group := tree.GetLogGroups(tree.root)
 	if len(log_group) != 3 {
 		t.Error("Should be a length 3")
 	}
-
 }

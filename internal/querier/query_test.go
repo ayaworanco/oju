@@ -91,8 +91,8 @@ func init_test_suite() []*parser.LogGroup {
 	log := string(file)
 	logs := strings.Split(log, "\n")
 
-	for id, registry := range logs {
-		parser.ParseLog(tree, registry, id)
+	for _, registry := range logs {
+		parser.ParseLog(tree, registry)
 	}
 
 	log_groups := tree.GetLogGroups(tree.GetRoot())

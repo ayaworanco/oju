@@ -8,14 +8,26 @@ import (
 
 func TestStartProcessAndSendLog(t *testing.T) {
 	tree := parser.NewTree(8)
-	app := StartApplication(tree, "abc@123", "")
+	app := Start(tree, "abc@123", "")
 
-	message := Message{
-		Type:    "LOG",
-		Payload: "Temperature (43C) exceeds",
+	messages := []Message{
+		{
+			Type:    "LOG",
+			Payload: "Temperature (43C) exceeds",
+		},
+		{
+			Type:    "LOG",
+			Payload: "Temperature (45C) exceeds",
+		},
+		{
+			Type:    "LOG",
+			Payload: "Temperature (62C) exceeds",
+		},
 	}
 
-	app.SendMessage(message)
+	for _, message := range messages {
+		app.SendMessage(message)
+	}
 	groups := tree.GetLogGroups(tree.GetRoot())
 
 	if len(groups) == 0 {

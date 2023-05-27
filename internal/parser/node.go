@@ -12,7 +12,11 @@ func new_node(label string, data interface{}) *node {
 	}
 }
 
-func (node *node) add_child(parts []string, log_message string, id int) {
+func (node *node) GetChildren() map[string]*node {
+	return node.children
+}
+
+func (node *node) add_child(parts []string, log_message string, id string) {
 	if len(node.children) > MAX_CHILD {
 		return
 	}

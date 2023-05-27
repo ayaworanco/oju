@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"time"
 
-	"oju/internal/parser"
+	"oju/internal/requester"
 )
 
 var (
@@ -86,15 +87,16 @@ func send_watch_message(host, app, query string) {
 	}
 }
 
-func create_watch_request(app, query string) (parser.Request, error) {
-	head := fmt.Sprintf("WATCH %s AWO1.1", app)
-
-	request, request_error := parser.NewRequest(head, query)
-	if request_error != nil {
-		return parser.Request{}, request_error
-	}
-
-	return request, nil
+func create_watch_request(app, query string) (requester.Request, error) {
+	return requester.Request{
+		Header: requester.Header{
+			Verb:    "WATCH",
+			AppKey:  app,
+			Version: "AWO1.1",
+		},
+		Timer:   time.Now().String(),
+		Message: query,
+	}, nil
 }
 
 func error_message(msg string) {
