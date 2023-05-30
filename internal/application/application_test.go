@@ -2,13 +2,14 @@ package application
 
 import (
 	"testing"
-
-	"oju/internal/parser"
 )
 
 func TestStartProcessAndSendLog(t *testing.T) {
-	tree := parser.NewTree(8)
-	app := Start(tree, "abc@123", "")
+	app := Start(10, Metadata{
+		Key:        "abc@123",
+		Host:       "http://app.api.svc.cluster.local",
+		WatchQuery: "",
+	})
 
 	messages := []Message{
 		{
@@ -28,9 +29,24 @@ func TestStartProcessAndSendLog(t *testing.T) {
 	for _, message := range messages {
 		app.SendMessage(message)
 	}
-	groups := tree.GetLogGroups(tree.GetRoot())
+	groups := app.tree.GetLogGroups(app.tree.GetRoot())
 
 	if len(groups) == 0 {
 		t.Error("Should have been parsed")
 	}
+}
+
+func TestStartProcessAndSendTrace(t *testing.T) {
+	app := Start(10, Metadata{
+		Key:        "abc@123",
+		Host:       "http://app.api.svc.cluster.local",
+		WatchQuery: "",
+	})
+
+	message := Message{
+		Type:    "TRACE",
+		Payload: `{"name":"span-name","service":"","attributes":{"http.url":"http://products.api.svc.cluster.local","http.method":"POST","http.body.email":"test@email.com"}}`,
+	}
+
+	app.SendMessage(message)
 }

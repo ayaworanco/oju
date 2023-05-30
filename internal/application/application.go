@@ -1,9 +1,10 @@
 package application
 
 import (
-	"fmt"
+	"log"
 
 	"oju/internal/parser"
+	"oju/internal/tracer"
 )
 
 type Message struct {
@@ -11,21 +12,28 @@ type Message struct {
 	Payload interface{}
 }
 
-type Application struct {
-	tree        *parser.Tree
-	key         string
-	watch_query string
-	mailbox     chan Message
+type Metadata struct {
+	Key        string
+	Host       string
+	WatchQuery string
 }
 
-// Starts application by running the actor model in a loop with your mailbox
-func Start(tree *parser.Tree, key, watch_query string) *Application {
-	mailbox := make(chan Message, 0) // maybe a []chan message?
+type Application struct {
+	tree     *parser.Tree
+	traces   chan []tracer.Trace
+	mailbox  chan Message
+	metadata Metadata
+}
+
+func Start(depth int, metadata Metadata) *Application {
+	mailbox := make(chan Message)
+	tree := parser.NewTree(depth)
+
 	application := &Application{
-		tree:        tree,
-		key:         key,
-		watch_query: watch_query,
-		mailbox:     mailbox,
+		tree:     tree,
+		mailbox:  mailbox,
+		metadata: metadata,
+		traces:   make(chan []tracer.Trace),
 	}
 
 	go application.run()
@@ -33,27 +41,35 @@ func Start(tree *parser.Tree, key, watch_query string) *Application {
 	return application
 }
 
-func (application *Application) SendMessage(msg Message) {
-	application.mailbox <- msg
+func (application *Application) SendMessage(message Message) {
+	application.mailbox <- message
 }
 
 func (application *Application) run() {
 	for {
-		select {
-		case msg := <-application.mailbox:
-			application.run_msg(msg)
-		}
+		application.handle_msg(<-application.mailbox)
 	}
 }
 
-func (application *Application) run_msg(msg Message) {
+func (application *Application) GetMetadata() Metadata {
+	return application.metadata
+}
+
+func (application *Application) GetTraces() chan []tracer.Trace {
+	return application.traces
+}
+
+func (application *Application) handle_msg(msg Message) {
 	switch msg.Type {
 	case "LOG":
 		parser.ParseLog(application.tree, msg.Payload.(string))
-		break
-	case "WATCH":
-		fmt.Println("this is a watch")
-		fmt.Printf("%#v", msg.Payload)
-		break
+	case "TRACE":
+		trace, parse_error := tracer.Parse(msg.Payload.(string))
+		if parse_error != nil {
+			log.Println("error on building tracer", parse_error.Error())
+		}
+		// application.traces <- append(<-application.traces, trace)
+		// to read: <-application.traces
+		application.traces <- append(<-application.traces, trace)
 	}
 }
