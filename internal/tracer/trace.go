@@ -30,6 +30,6 @@ func (trace *Trace) SetId() {
 	trace.id = utils.GenerateId()
 }
 
-func (trace *Trace) GetId() {
-	trace.id = utils.GenerateId()
+func (trace *Trace) GetId() string {
+	return trace.id
 }

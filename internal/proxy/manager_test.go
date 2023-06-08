@@ -1,11 +1,10 @@
-package routing
+package proxy
 
 import (
 	//"fmt"
-	"fmt"
+
 	"testing"
 
-	"oju/internal/application"
 	"oju/internal/config"
 )
 
@@ -28,22 +27,15 @@ func load_config() config.Config {
 
 func TestUpAllAllowedApplicationsByProxy(t *testing.T) {
 	config := load_config()
-	proxy := NewProxy(config.AllowedApplications)
+	manager := NewManager(config.AllowedApplications)
 
-	message := application.Message{
+	message := ApplicationMessage{
 		Type:    "TRACE",
 		Payload: `{"name":"span-name","service":"","attributes":{"http.url":"http://products.api.svc.cluster.local","http.method":"POST","http.body.email":"test@email.com"}}`,
 	}
 
-	proxy.Redirect("abc@123", message)
-	app, app_error := proxy.GetApp("abc@123")
-
-	if app_error != nil {
-		t.Fatal(app_error)
-	}
-
-	traces := <-app.GetTraces()
-	fmt.Printf("%#v", traces)
+	manager.Redirect("abc@123", message)
+	traces := manager.GetAppTraces("abc@123")
 
 	if len(traces) == 0 {
 		t.Fatal("traces must be filled")

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"crypto/md5"
+	"encoding/hex"
 	"io"
 	"time"
 )
@@ -9,5 +10,6 @@ import (
 func GenerateId() string {
 	hash := md5.New()
 	io.WriteString(hash, time.Now().String())
-	return string(hash.Sum(nil))
+	sum := hash.Sum(nil)
+	return hex.EncodeToString(sum)
 }
