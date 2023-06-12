@@ -32,7 +32,7 @@ func (application *Application) GetTraces() map[string]*tracer.Trace {
 	return application.traces
 }
 
-func (application *Application) HandleMessage(message ApplicationMessage) {
+func (application *Application) HandleMessage(message ApplicationMessage, stack_trace *StackTrace, applications_metadata []Metadata) {
 	switch message.Type {
 	case "LOG":
 		parser.ParseLog(application.parse_tree, message.Payload)
@@ -45,5 +45,36 @@ func (application *Application) HandleMessage(message ApplicationMessage) {
 		}
 
 		application.traces[trace.GetId()] = &trace
+		service, service_error := get_service(trace, applications_metadata)
+
+		if service_error != nil {
+			application.errors = append(application.errors, service_error)
+			break
+		}
+
+		stack_trace.RunStack(&trace, service)
 	}
+}
+
+func get_service(trace tracer.Trace, metadatas []Metadata) (string, error) {
+	service := trace.Service
+	attributes := trace.Attributes
+	for _, metadata := range metadatas {
+		if service != "" {
+			if metadata.Key == service {
+				return metadata.Key, nil
+			}
+			if metadata.Host == service {
+				return metadata.Host, nil
+			}
+		} else {
+			for _, value := range attributes {
+				if value == metadata.Key || value == metadata.Host  {
+					return value, nil
+				}
+			}
+		}
+	}
+
+	return "", errors.New("service not found")
 }

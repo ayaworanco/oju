@@ -8,9 +8,11 @@ import (
 
 type Trace struct {
 	id         string
-	Name       string      `json:"name"`
-	Service    string      `json:"service"`
-	Attributes interface{} `json:"attributes"`
+	AppKey     string      						`json:"app_key"`
+	Name       string      						`json:"name"`
+	Service    string      						`json:"service"`
+	Attributes map[string]string 			`json:"attributes"`
+	children   map[string]*Trace
 }
 
 func Parse(packet string) (Trace, error) {
@@ -32,4 +34,8 @@ func (trace *Trace) SetId() {
 
 func (trace *Trace) GetId() string {
 	return trace.id
+}
+
+func (trace *Trace) GetChildren() map[string]*Trace {
+	return trace.children
 }
