@@ -13,6 +13,7 @@ type Config struct {
 type Application struct {
 	Name   string `json:"name"`
 	AppKey string `json:"app_key"`
+	Host   string `json:"host"`
 }
 
 func BuildConfig(config_file []byte) (Config, error) {
