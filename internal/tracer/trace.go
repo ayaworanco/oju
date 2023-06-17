@@ -8,10 +8,10 @@ import (
 
 type Trace struct {
 	id         string
-	AppKey     string      						`json:"app_key"`
-	Name       string      						`json:"name"`
-	Service    string      						`json:"service"`
-	Attributes map[string]string 			`json:"attributes"`
+	AppKey     string            `json:"app_key"`
+	Name       string            `json:"name"`
+	Service    string            `json:"service"`
+	Attributes map[string]string `json:"attributes"`
 	children   map[string]*Trace
 }
 
@@ -38,4 +38,14 @@ func (trace *Trace) GetId() string {
 
 func (trace *Trace) GetChildren() map[string]*Trace {
 	return trace.children
+}
+
+func (trace *Trace) AddChild(new_trace *Trace) {
+	id := new_trace.GetId()
+	if trace.children == nil {
+		trace.children = make(map[string]*Trace)
+		trace.children[id] = new_trace
+	} else {
+		trace.children[id] = new_trace
+	}
 }

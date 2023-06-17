@@ -45,36 +45,7 @@ func (application *Application) HandleMessage(message ApplicationMessage, stack_
 		}
 
 		application.traces[trace.GetId()] = &trace
-		service, service_error := get_service(trace, applications_metadata)
 
-		if service_error != nil {
-			application.errors = append(application.errors, service_error)
-			break
-		}
-
-		stack_trace.RunStack(&trace, service)
+		stack_trace.RunStack(&trace, applications_metadata)
 	}
-}
-
-func get_service(trace tracer.Trace, metadatas []Metadata) (string, error) {
-	service := trace.Service
-	attributes := trace.Attributes
-	for _, metadata := range metadatas {
-		if service != "" {
-			if metadata.Key == service {
-				return metadata.Key, nil
-			}
-			if metadata.Host == service {
-				return metadata.Host, nil
-			}
-		} else {
-			for _, value := range attributes {
-				if value == metadata.Key || value == metadata.Host  {
-					return value, nil
-				}
-			}
-		}
-	}
-
-	return "", errors.New("service not found")
 }
