@@ -10,3 +10,5 @@ build/*
 olu
 config.json
 *.DS_Store
+
+dist/
