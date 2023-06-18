@@ -9,10 +9,12 @@ import (
 	"oju/internal/config"
 	"oju/internal/proxy"
 	"oju/internal/requester"
+	"oju/internal/commander"
 	"os"
 )
 
 func main() {
+	fmt.Println(commander.USAGE)
 	config_file, load_error := config.LoadConfigFile()
 
 	if load_error != nil {
@@ -22,18 +24,25 @@ func main() {
 	config, load_config_error := config.BuildConfig(config_file)
 
 	if load_config_error != nil {
+		fmt.Println(load_config_error.Error())
 		log.Fatalln("error loding config")
 	}
 
 	manager := proxy.NewManager(config.AllowedApplications)
 
-	listener, listener_error := net.Listen("tcp", ":"+os.Getenv("PORT"))
+	port := os.Getenv("PORT")
+	if len(port) == 0 {
+		port = "9090"
+	}
+
+	listener, listener_error := net.Listen("tcp", ":"+port)
 	if listener_error != nil {
 		log.Fatalln("Oju error: ", listener_error.Error())
 	}
 
 	defer listener.Close()
-	log.Println("[OJU STARTED] port:" + os.Getenv("PORT"))
+	log.Println("[OJU STARTED] port:" + port)
+	fmt.Println("--------------------------------------------")
 
 	for {
 		socket, socket_error := listener.Accept()
@@ -63,6 +72,7 @@ func handle_incoming_message(socket net.Conn, config config.Config, manager *pro
 		if string(message) == "" {
 			break
 		}
+
 		request, request_error := requester.Parse(string(message), config.AllowedApplications)
 		if request_error != nil {
 			log.Println("Error on parsing request: ", request_error.Error())

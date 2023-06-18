@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"encoding/json"
 	"errors"
 	"os"
@@ -22,6 +23,14 @@ func BuildConfig(config_file []byte) (Config, error) {
 	err := json.Unmarshal(config_file, &config)
 	if err != nil {
 		return Config{}, err
+	}
+
+	for _, application := range config.AllowedApplications {
+		fmt.Println("=> application loaded!")
+		fmt.Println("[name]: ", application.Name)
+		fmt.Println("[key]: ", application.AppKey)
+		fmt.Println("[host]: ", application.Host)
+		fmt.Println("--------------------------------------------")
 	}
 
 	return config, nil

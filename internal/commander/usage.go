@@ -47,7 +47,6 @@ const USAGE = `
                                                                                                                                                                                                         
                                                                                                                                                                                                         
 
-A simple query tool for interacting with Oju server
 `
 
 const version_usage = `Show the application version
