@@ -27,6 +27,7 @@ func (stack *StackTrace) RunStack(trace *tracer.Trace, metadatas []Metadata) {
 		if previous_trace.Service == trace.AppKey {
 			previous_trace.AddChild(trace)
 
+			previous_trace.Print()
 			stack.traces = remove_trace(stack.traces, previous_index)
 			return
 		}
@@ -40,6 +41,7 @@ func (stack *StackTrace) RunStack(trace *tracer.Trace, metadatas []Metadata) {
 		if previous_trace.Service == host {
 			previous_trace.AddChild(trace)
 
+			previous_trace.Print()
 			stack.traces = remove_trace(stack.traces, previous_index)
 			return
 		}

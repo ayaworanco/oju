@@ -32,19 +32,20 @@ func (application *Application) GetTraces() map[string]*tracer.Trace {
 	return application.traces
 }
 
-func (application *Application) HandleMessage(message ApplicationMessage, stack_trace *StackTrace, applications_metadata []Metadata) {
+func (application *Application) HandleMessage(destination string, message ApplicationMessage, stack_trace *StackTrace, applications_metadata []Metadata) {
 	switch message.Type {
 	case "LOG":
 		parser.ParseLog(application.parse_tree, message.Payload)
 	case "TRACE":
 		trace, parse_trace_error := tracer.Parse(message.Payload)
+		trace.SetAppKey(destination)
 
 		if parse_trace_error != nil {
 			application.errors = append(application.errors, errors.New(parse_trace_error.Error()))
 			break
 		}
 
-		application.traces[trace.GetId()] = &trace
+	application.traces[trace.GetId()] = &trace
 
 		stack_trace.RunStack(&trace, applications_metadata)
 	}

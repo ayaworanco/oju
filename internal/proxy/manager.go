@@ -34,15 +34,10 @@ func NewManager(allowed_applications []config.Application) *Manager {
 }
 
 func (manager *Manager) Redirect(destination string, payload ApplicationMessage) {
-	message := Message{
-		Destination: destination,
-		Payload:     payload,
-	}
-
 	for _, app := range manager.Applications {
 		metadata := app.GetMetadata()
-		if metadata.Host == message.Destination || metadata.Key == message.Destination {
-			app.HandleMessage(message.Payload, manager.StackTrace, manager.GetMetadatas())
+		if metadata.Host == destination || metadata.Key == destination {
+			app.HandleMessage(destination, payload, manager.StackTrace, manager.GetMetadatas())
 		}
 	}
 }

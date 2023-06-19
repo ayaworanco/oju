@@ -1,6 +1,7 @@
 package tracer
 
 import (
+	"fmt"
 	"encoding/json"
 
 	"oju/internal/utils"
@@ -40,6 +41,10 @@ func (trace *Trace) GetChildren() map[string]*Trace {
 	return trace.children
 }
 
+func (trace *Trace) SetAppKey(app_key string) {
+	trace.AppKey = app_key
+}
+
 func (trace *Trace) AddChild(new_trace *Trace) {
 	id := new_trace.GetId()
 	if trace.children == nil {
@@ -47,5 +52,26 @@ func (trace *Trace) AddChild(new_trace *Trace) {
 		trace.children[id] = new_trace
 	} else {
 		trace.children[id] = new_trace
+	}
+}
+
+func (trace *Trace) Print() {
+	var service string
+
+	if trace.Service == "" {
+		service = "No service pointed"
+	} else {
+		service = trace.Service
+	}
+
+	fmt.Println("=> TRACE from ", trace.AppKey)
+	fmt.Println("[id]: ", trace.GetId())
+	fmt.Println("[span-name]: ", trace.Name)
+
+	fmt.Println("[service]: ", service)
+	fmt.Println("[children]: ", len(trace.GetChildren()))
+	fmt.Println("[attributes]:")
+	for key, value := range trace.Attributes {
+		fmt.Printf("\t[%s]: %s\n", key, value)
 	}
 }

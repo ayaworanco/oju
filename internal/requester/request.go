@@ -94,14 +94,11 @@ func is_verb_allowed(verb string) bool {
 }
 
 func is_application_allowed(app_key string, allowed_applications []config.Application) bool {
-	is_allowed := false
 
 	for _, application := range allowed_applications {
 		if application.AppKey == app_key {
-			is_allowed = true
-		} else {
-			is_allowed = false
+			return true
 		}
 	}
-	return is_allowed
+	return false
 }
