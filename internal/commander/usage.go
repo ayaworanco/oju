@@ -43,11 +43,7 @@ const USAGE = `
                                                                                             :!77:        :7~                                                                                            
                                                                                              :~!!:.   ..^!^                                                                                             
                                                                                                .:^^^^^^^:.                                                                                              
-                                                                                                                                                                                                        
-                                                                                                                                                                                                        
-                                                                                                                                                                                                        
-
-`
+                                                                                                                                                                                                        `
 
 const version_usage = `Show the application version
 
