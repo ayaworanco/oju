@@ -18,7 +18,7 @@ export default defineConfig({
         items: [
           { text: 'Installing', link: '/installing' },
           { text: 'Running', link: '/running' },
-          { text: 'Using Qolu', link: '/using-qoju' }
+          //{ text: 'Using Qolu', link: '/using-qoju' }
         ]
       }
     ],
