@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"fmt"
 	"encoding/json"
 	"errors"
@@ -25,6 +26,10 @@ func BuildConfig(config_file []byte) (Config, error) {
 		return Config{}, err
 	}
 
+	if len(config.AllowedApplications) == 0 {
+		return Config{}, errors.New("Malformed config file")
+	}
+
 	for _, application := range config.AllowedApplications {
 		fmt.Println("=> application loaded!")
 		fmt.Println("[name]: ", application.Name)
@@ -38,11 +43,19 @@ func BuildConfig(config_file []byte) (Config, error) {
 
 func LoadConfigFile() ([]byte, error) {
 	var config_file string
+
+	path, path_err := os.Getwd()
+
+	if path_err != nil {
+		log.Fatal(path_err)
+	}
+
 	config_file = os.Getenv("CONFIG_JSON_PATH")
 
 	if config_file == "" {
-		config_file = "./config.json"
+		config_file = path + "/config.json"
 	}
+
 
 	file, read_error := os.ReadFile(config_file)
 	if read_error != nil {

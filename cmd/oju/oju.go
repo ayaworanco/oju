@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	fmt.Println(commander.USAGE)
+	fmt.Println("\033[33m" + commander.USAGE + "\033[97m")
 	config_file, load_error := config.LoadConfigFile()
 
 	if load_error != nil {
@@ -24,8 +24,7 @@ func main() {
 	config, load_config_error := config.BuildConfig(config_file)
 
 	if load_config_error != nil {
-		fmt.Println(load_config_error.Error())
-		log.Fatalln("error loding config")
+		log.Fatalln(load_config_error.Error())
 	}
 
 	manager := proxy.NewManager(config.AllowedApplications)
