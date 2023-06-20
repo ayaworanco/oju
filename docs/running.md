@@ -1,6 +1,33 @@
 # Running
 
-## AWO Protocol
+First of all you need a config file called `config.json` in your working directory within `oju` binary.
+
+## Config file example
+
+An example of the `config.json` file
+
+```json
+{
+    "allowed_applications": [
+       {
+            "name": "worker-1",
+            "app_key": "<app-generated-key>", // Can be an UUID
+            "host": "http://worker.api.svc.cluster.local" // Example if is stored on kubernetes
+       } 
+    ]
+}
+```
+
+## Using the binary
+
+In your working directory with your `config.json` you just run
+```sh
+./oju
+```
+
+If you are in MacOS you probably will need to allow permission for the binary run.
+
+<!--
 
 The AWO protocol will be the communication that we will use within Oju. He is quitely similar to HTTP protocol with a few differences. AWO is used only for this purpose, entry logs and queries.
 
@@ -37,3 +64,4 @@ socket.close
 ```
 
 This will send a message and all things will be processed
+-->
