@@ -12,4 +12,4 @@ config.json
 *.DS_Store
 
 dist/
-.tool_versions
+.tool-versions
