@@ -20,7 +20,24 @@ export default defineConfig({
           { text: 'Running', link: '/running' },
           //{ text: 'Using Qolu', link: '/using-qoju' }
         ]
-      }
+      },
+			{
+				text: "Architecture",
+				items: [
+					{text: 'AWO Protocol', link: 'awo-protocol'},
+          {text: 'Distributed Tracings', items: [
+            {text: 'Tracer', link: 'distributed-tracing/tracer'},
+            {text: 'Service Discovery', link: 'distributed-tracing/service-discovery'},
+          ]},
+					{text: 'Logs', items: [
+            {text: 'Parser', link: 'logs/parser'},
+					]},
+					{text: 'Contributing', items: [
+            {text: 'How to', link: 'contributing/how-to'},
+            {text: 'Example', link: 'contributing/example'},
+					]}
+				]
+			}
     ],
 
     socialLinks: [
