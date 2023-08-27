@@ -13,3 +13,14 @@ func GenerateId() string {
 	sum := hash.Sum(nil)
 	return hex.EncodeToString(sum)
 }
+
+func MapPut[Key comparable, Value any](old_map map[Key]Value, key Key, value Value) map[Key]Value {
+	new_map := make(map[Key]Value)
+	for new_key, new_value := range old_map {
+		new_map[new_key] = new_value
+	}
+
+	new_map[key] = value
+
+	return new_map
+}

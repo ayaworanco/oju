@@ -7,6 +7,9 @@ import (
 	"oju/internal/utils"
 )
 
+// FIXME: change some fields
+// Name -> Action
+// Service -> Target
 type Trace struct {
 	id         string
 	AppKey     string            `json:"app_key"`
