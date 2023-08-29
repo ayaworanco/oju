@@ -1,22 +1,28 @@
 package journey
 
 import (
-	"oju/internal/config"
 	"testing"
+	"oju/internal/tracer"
 )
 
-func TestGraphGenerate(t *testing.T) {
-	apps := []config.Application{
-		{
-			Name:   "test_a",
-			AppKey: "test_a",
-			Host:   "http://test_a.svc.cluster.local",
-		},
+func TestUpdateGraph(t *testing.T) {
+	graph := new_graph(make(map[string]vertex))
+
+	trace := tracer.Trace{
+		AppKey: "test1",
+		Name: "bhaskara",
+		Service: "delta",
+		Attributes: make(map[string]string),
 	}
 
-	graph := new_graph(apps)
+	command := InsertActionCommand{
+		Type: INSERT_ACTION,
+		Data: trace,
+	}
 
-	if len(graph.vertices) != 0 {
-		t.Error("vertices are created")
+	graph = update_graph(graph, command)
+
+	if len(graph.vertices) == 0 {
+		t.Error("vertices length should be greatet than 0")
 	}
 }

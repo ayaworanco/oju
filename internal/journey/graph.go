@@ -3,8 +3,12 @@ package journey
 import (
 	"oju/internal/config"
 	"oju/internal/tracer"
-	"oju/internal/utils"
+	//"oju/internal/utils"
 	"fmt"
+)
+
+const (
+	INVALID_COMMAND = "invalid command"
 )
 
 type graph struct {
@@ -16,25 +20,27 @@ type vertex struct {
 	name string
 }
 
-func new_graph(applications []config.Application) graph {
-	return graph{
-		vertices:     make(map[string]vertex),
-		applications: applications,
-	}
+type InsertActionCommand struct {
+	Type string
+	Data tracer.Trace
 }
 
-func new_graph_pure(vertices map[string]vertex) graph {
+func new_graph(vertices map[string]vertex) graph {
 	return graph{
 		vertices: vertices,
 		applications: []config.Application{},
 	}
 }
 
-func update_graph(old_graph graph, data tracer.Trace) graph {
-	new_vertex := vertex{name: data.Name}
+func update_graph(old_graph graph, command InsertActionCommand) graph {
+	fmt.Printf("%#v", command)
+	/*
+	new_vertex := vertex{name: command.Data.Name}
 
-	action := fmt.Sprintf("%s@%s", data.AppKey, data.Name)
+	action := fmt.Sprintf("%s@%s", command.Data.AppKey, command.Data.Name)
 	new_map := utils.MapPut(old_graph.vertices, action, new_vertex)
 
-	return new_graph_pure(new_map)
+	return new_graph(new_map)
+	*/
+	return old_graph
 }

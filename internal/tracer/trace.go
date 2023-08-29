@@ -19,6 +19,11 @@ type Trace struct {
 	children   map[string]*Trace
 }
 
+type IsTrace interface {
+	Trace 
+	GetId() string
+}
+
 func Parse(packet string) (Trace, error) {
 	var tracer Trace
 	unmarshal_error := json.Unmarshal([]byte(packet), &tracer)
@@ -36,7 +41,7 @@ func (trace *Trace) SetId() {
 	trace.id = utils.GenerateId()
 }
 
-func (trace *Trace) GetId() string {
+func (trace Trace) GetId() string {
 	return trace.id
 }
 

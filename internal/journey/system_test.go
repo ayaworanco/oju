@@ -1,17 +1,15 @@
 package journey
 
 import (
-	"testing"
-	"oju/internal/config"
-	"oju/internal/tracer"
 )
 
-type test_suite struct {
+/*
+type test_suite[T tracer.Trace | string] struct {
 	apps []config.Application
-	system system
+	system system[T]
 }
 
-func setup() test_suite {
+func setup[T tracer.Trace | string]() test_suite[T] {
 	apps := []config.Application{
 		{
 			Name:   "test_a",
@@ -20,15 +18,15 @@ func setup() test_suite {
 		},
 	}
 
-	return test_suite{
+	return test_suite[T]{
 		apps: apps,
-		system: NewSystem(apps),
+		system: NewSystem[T](apps),
 	}
 
 }
 
 func TestInsertAction(t *testing.T) {
-	suite := setup()
+	setup[tracer.Trace]()
 
 	trace := tracer.Trace{
 		AppKey: "test1",
@@ -37,5 +35,12 @@ func TestInsertAction(t *testing.T) {
 		Attributes: make(map[string]string),
 	}
 
-	suite.system.InsertAction(trace)
+	message := SystemMessage[tracer.Trace]{
+		Type: INSERT_ACTION,
+		Data: trace,
+	}
+
+	Send[tracer.Trace](message)
 }
+
+*/

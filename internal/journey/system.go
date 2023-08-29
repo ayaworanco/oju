@@ -2,9 +2,8 @@ package journey
 
 import (
 	"oju/internal/config"
-	"oju/internal/tracer"
-	"reflect"
-	"fmt"
+	//"oju/internal/tracer"
+	//"fmt"
 )
 
 const (
@@ -14,34 +13,39 @@ const (
 
 type system struct {
 	graph   graph
-	mailbox chan interface{} // FIXME: change to a better struct
+	applications []config.Application
+	mailbox chan interface{} 
 }
 
-type SystemMessage struct {
-	Trace       tracer.Trace
-}
 
 func NewSystem(allowed_applications []config.Application) system {
 	system := system{
-		graph:   new_graph(allowed_applications),
+		graph:   new_graph(make(map[string]vertex)),
+		applications: allowed_applications,
 		mailbox: make(chan interface{}),
 	}
 
-	go system.run()
+	go run(system)
 	return system
 }
 
-func (system system) InsertAction(data tracer.Trace) {
-	system.mailbox <- data
+func Send(sys system, message interface{}) {
+	sys.mailbox <- message
 }
 
-func (system system) run() {
-	for message := range system.mailbox {
-		message_type := reflect.TypeOf(message)
-		switch message_type.Name() {
-		case "Trace":
-			system.graph = update_graph(system.graph, message.(tracer.Trace))
+func run(sys system) {
+	for message := range sys.mailbox {
+		println(message)
+		/*
+		switch message.Type {
+		case INSERT_ACTION:
+			//system.graph = update_graph[T](system.graph, message)
+			fmt.Println("inserting action")
+			break
+		case GET_STRUCTURE:
+			fmt.Println("getting structure")
 			break
 		}
+		*/
 	}
 }
