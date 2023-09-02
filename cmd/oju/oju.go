@@ -29,7 +29,6 @@ func main() {
 		log.Fatalln(load_config_error.Error())
 	}
 
-	// manager := proxy.NewManager(config.AllowedApplications)
 	system := system.NewSystem(config.AllowedApplications)
 
 	port := os.Getenv("PORT")
@@ -86,7 +85,6 @@ func handle_incoming_message(socket net.Conn, config config.Config, sys system.S
 			trace, parse_trace_error := tracer.Parse(request.Message)
 
 			if parse_trace_error != nil {
-				system.AddError(sys, parse_trace_error)
 				log.Println("Error on parsing trace: ", parse_trace_error.Error())
 			}
 

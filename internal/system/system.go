@@ -28,7 +28,6 @@ func NewSystem(allowed_applications []config.Application) System {
 		mailbox:      make(chan journey.Command),
 	}
 
-	// TODO: allow load by armazen the system with graph
 	go run(system)
 	return system
 }
@@ -42,7 +41,6 @@ func run(sys System) {
 	for {
 		select {
 		case message := <-sys.mailbox:
-			// TODO: use armazen to save when system resolve a message (check later the saving strategy)
 			sys = resolve_message(message, sys)
 		case t := <-ticker.C:
 			fmt.Println("time is over: ", t)
@@ -67,8 +65,4 @@ func resolve_message(message journey.Command, sys System) System {
 		return sys
 	}
 	return sys
-}
-
-func AddError(system System, some_error error) {
-	// TODO: use armazen to log this error
 }
