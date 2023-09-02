@@ -88,8 +88,6 @@ func handle_incoming_message(socket net.Conn, config config.Config, sys system.S
 				log.Println("Error on parsing trace: ", parse_trace_error.Error())
 			}
 
-			trace.SetResource(request.Header.AppKey)
-
 			command := journey.NewInsertActionCommand(trace)
 			system.Send(sys, command)
 		default:
