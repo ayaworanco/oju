@@ -1,19 +1,27 @@
 package tracer
 
 import (
-	"fmt"
 	"encoding/json"
+	"errors"
+	"fmt"
 
 	"oju/internal/utils"
 )
 
+const NO_TARGET_POINTED = "no target pointed"
+const ESSENTIAL_DATA_EMPTY = "essential data is empty"
+
 type Trace struct {
 	id         string
-	AppKey     string            `json:"app_key"`
-	Name       string            `json:"name"`
-	Service    string            `json:"service"`
+	Resource   string            `json:"resource"`
+	Action     string            `json:"action"`
+	Target     string            `json:"target"`
 	Attributes map[string]string `json:"attributes"`
-	children   map[string]*Trace
+}
+
+type IsTrace interface {
+	Trace
+	GetId() string
 }
 
 func Parse(packet string) (Trace, error) {
@@ -22,6 +30,10 @@ func Parse(packet string) (Trace, error) {
 
 	if unmarshal_error != nil {
 		return Trace{}, unmarshal_error
+	}
+
+	if tracer.Action == "" && tracer.Target == "" && tracer.Resource == "" {
+		return Trace{}, errors.New(ESSENTIAL_DATA_EMPTY)
 	}
 
 	tracer.SetId()
@@ -33,43 +45,24 @@ func (trace *Trace) SetId() {
 	trace.id = utils.GenerateId()
 }
 
-func (trace *Trace) GetId() string {
+func (trace Trace) GetId() string {
 	return trace.id
 }
 
-func (trace *Trace) GetChildren() map[string]*Trace {
-	return trace.children
-}
-
-func (trace *Trace) SetAppKey(app_key string) {
-	trace.AppKey = app_key
-}
-
-func (trace *Trace) AddChild(new_trace *Trace) {
-	id := new_trace.GetId()
-	if trace.children == nil {
-		trace.children = make(map[string]*Trace)
-		trace.children[id] = new_trace
-	} else {
-		trace.children[id] = new_trace
-	}
-}
-
-func (trace *Trace) Print() {
+func (trace Trace) Print() {
 	var service string
 
-	if trace.Service == "" {
-		service = "No service pointed"
+	if trace.Target == "" {
+		service = NO_TARGET_POINTED
 	} else {
-		service = trace.Service
+		service = trace.Target
 	}
 
-	fmt.Println("=> TRACE from ", trace.AppKey)
+	fmt.Println("=> TRACE from ", trace.Resource)
 	fmt.Println("[id]: ", trace.GetId())
-	fmt.Println("[span-name]: ", trace.Name)
+	fmt.Println("[action]: ", trace.Action)
 
 	fmt.Println("[service]: ", service)
-	fmt.Println("[children]: ", len(trace.GetChildren()))
 	fmt.Println("[attributes]:")
 	for key, value := range trace.Attributes {
 		fmt.Printf("\t[%s]: %s\n", key, value)
