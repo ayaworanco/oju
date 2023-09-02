@@ -1,28 +1,25 @@
 package journey
 
 import (
-	"testing"
 	"oju/internal/tracer"
+	"testing"
 )
 
 func TestUpdateGraph(t *testing.T) {
-	graph := new_graph(make(map[string]vertex))
+	graph := NewGraph(make(map[string]Vertex))
 
 	trace := tracer.Trace{
-		AppKey: "test1",
-		Name: "bhaskara",
-		Service: "delta",
+		Resource:   "test1",
+		Action:     "bhaskara",
+		Target:     "delta",
 		Attributes: make(map[string]string),
 	}
 
-	command := InsertActionCommand{
-		Type: INSERT_ACTION,
-		Data: trace,
-	}
+	command := NewInsertActionCommand(trace)
 
-	graph = update_graph(graph, command)
+	graph = UpdateGraph(graph, command)
 
-	if len(graph.vertices) == 0 {
+	if len(graph.Vertices) == 0 {
 		t.Error("vertices length should be greatet than 0")
 	}
 }

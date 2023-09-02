@@ -1,46 +1,49 @@
 package journey
 
 import (
-	"oju/internal/config"
-	"oju/internal/tracer"
-	//"oju/internal/utils"
+	"oju/internal/utils"
+
 	"fmt"
 )
 
-const (
-	INVALID_COMMAND = "invalid command"
-)
-
-type graph struct {
-	vertices     map[string]vertex
-	applications []config.Application // INFO: this is needed?
+type Graph struct {
+	Vertices map[string]Vertex
 }
 
-type vertex struct {
-	name string
+type Vertex struct {
+	name   string
+	target string
 }
 
-type InsertActionCommand struct {
-	Type string
-	Data tracer.Trace
-}
-
-func new_graph(vertices map[string]vertex) graph {
-	return graph{
-		vertices: vertices,
-		applications: []config.Application{},
+func NewGraph(vertices map[string]Vertex) Graph {
+	return Graph{
+		Vertices: vertices,
 	}
 }
 
-func update_graph(old_graph graph, command InsertActionCommand) graph {
-	fmt.Printf("%#v", command)
-	/*
-	new_vertex := vertex{name: command.Data.Name}
+func UpdateGraph(old_graph Graph, command InsertActionCommand) Graph {
+	action := fmt.Sprintf("%s@%s", command.Data.Resource, command.Data.Action)
 
-	action := fmt.Sprintf("%s@%s", command.Data.AppKey, command.Data.Name)
-	new_map := utils.MapPut(old_graph.vertices, action, new_vertex)
+	new_vertex := Vertex{name: command.Data.Action, target: command.Data.Target}
+	new_map := utils.MapPut(old_graph.Vertices, action, new_vertex)
 
-	return new_graph(new_map)
-	*/
-	return old_graph
+	return NewGraph(new_map)
+}
+
+func GetJourney(action string, current map[string]Vertex, vertices map[string]Vertex) map[string]journey_vertex {
+	new_journey := map[string]journey_vertex{action: {data: action}}
+
+	if current[action].target == "" {
+		return new_journey
+	}
+
+	target_name := current[action].target
+	target_vertex := vertices[target_name]
+
+	if entry, ok := new_journey[action]; ok {
+		entry.target = GetJourney(target_name, map[string]Vertex{target_name: target_vertex}, vertices)
+		new_journey[action] = entry
+	}
+
+	return new_journey
 }

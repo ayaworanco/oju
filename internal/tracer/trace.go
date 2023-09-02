@@ -1,26 +1,25 @@
 package tracer
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 
 	"oju/internal/utils"
 )
 
-// FIXME: change some fields
-// Name -> Action
-// Service -> Target
+const NO_TARGET_POINTED = "no target pointed"
+
 type Trace struct {
 	id         string
-	AppKey     string            `json:"app_key"`
-	Name       string            `json:"name"`
-	Service    string            `json:"service"`
+	Resource   string            `json:"resource"`
+	Action     string            `json:"action"`
+	Target     string            `json:"target"`
 	Attributes map[string]string `json:"attributes"`
 	children   map[string]*Trace
 }
 
 type IsTrace interface {
-	Trace 
+	Trace
 	GetId() string
 }
 
@@ -49,8 +48,8 @@ func (trace *Trace) GetChildren() map[string]*Trace {
 	return trace.children
 }
 
-func (trace *Trace) SetAppKey(app_key string) {
-	trace.AppKey = app_key
+func (trace *Trace) SetResource(resource string) {
+	trace.Resource = resource
 }
 
 func (trace *Trace) AddChild(new_trace *Trace) {
@@ -66,15 +65,15 @@ func (trace *Trace) AddChild(new_trace *Trace) {
 func (trace *Trace) Print() {
 	var service string
 
-	if trace.Service == "" {
-		service = "No service pointed"
+	if trace.Target == "" {
+		service = NO_TARGET_POINTED
 	} else {
-		service = trace.Service
+		service = trace.Target
 	}
 
-	fmt.Println("=> TRACE from ", trace.AppKey)
+	fmt.Println("=> TRACE from ", trace.Resource)
 	fmt.Println("[id]: ", trace.GetId())
-	fmt.Println("[span-name]: ", trace.Name)
+	fmt.Println("[action]: ", trace.Action)
 
 	fmt.Println("[service]: ", service)
 	fmt.Println("[children]: ", len(trace.GetChildren()))

@@ -6,10 +6,12 @@ import (
 	"io"
 	"log"
 	"net"
-	"oju/internal/config"
-	"oju/internal/proxy"
-	"oju/internal/requester"
 	"oju/internal/commander"
+	"oju/internal/config"
+	"oju/internal/journey"
+	"oju/internal/requester"
+	"oju/internal/system"
+	"oju/internal/tracer"
 	"os"
 )
 
@@ -27,7 +29,8 @@ func main() {
 		log.Fatalln(load_config_error.Error())
 	}
 
-	manager := proxy.NewManager(config.AllowedApplications)
+	// manager := proxy.NewManager(config.AllowedApplications)
+	system := system.NewSystem(config.AllowedApplications)
 
 	port := os.Getenv("PORT")
 	if len(port) == 0 {
@@ -49,11 +52,11 @@ func main() {
 			log.Println("Socket Error: ", socket_error.Error())
 		}
 
-		go handle_incoming_message(socket, config, manager)
+		go handle_incoming_message(socket, config, system)
 	}
 }
 
-func handle_incoming_message(socket net.Conn, config config.Config, manager *proxy.Manager) {
+func handle_incoming_message(socket net.Conn, config config.Config, sys system.System) {
 	log.Println("New connection accepted: ", socket.RemoteAddr().String())
 	reader := bufio.NewReader(socket)
 
@@ -79,21 +82,18 @@ func handle_incoming_message(socket net.Conn, config config.Config, manager *pro
 		}
 
 		switch request.Header.Verb {
-		case "LOG":
-			manager.Redirect(request.Header.AppKey, proxy.ApplicationMessage{
-				Type:    "LOG",
-				Payload: request.Message,
-			})
-			break
 		case "TRACE":
-			manager.Redirect(request.Header.AppKey, proxy.ApplicationMessage{
-				Type:    "TRACE",
-				Payload: request.Message,
-			})
-			break
-		case "WATCH":
-			// install watcher
-			fmt.Println("Installing watcher")
+			trace, parse_trace_error := tracer.Parse(request.Message)
+
+			if parse_trace_error != nil {
+				system.AddError(sys, parse_trace_error)
+				log.Println("Error on parsing trace: ", parse_trace_error.Error())
+			}
+
+			trace.SetResource(request.Header.AppKey)
+
+			command := journey.NewInsertActionCommand(trace)
+			system.Send(sys, command)
 		default:
 		}
 
