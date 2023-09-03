@@ -11,8 +11,8 @@ type Graph struct {
 }
 
 type Vertex struct {
-	name   string
-	target string
+	Name   string
+	Target string
 }
 
 func NewGraph(vertices map[string]Vertex) Graph {
@@ -24,7 +24,7 @@ func NewGraph(vertices map[string]Vertex) Graph {
 func UpdateGraph(old_graph Graph, command InsertActionCommand) Graph {
 	action := fmt.Sprintf("%s@%s", command.Data.Resource, command.Data.Action)
 
-	new_vertex := Vertex{name: command.Data.Action, target: command.Data.Target}
+	new_vertex := Vertex{Name: command.Data.Action, Target: command.Data.Target}
 	new_map := utils.MapPut(old_graph.Vertices, action, new_vertex)
 
 	return NewGraph(new_map)
@@ -33,11 +33,11 @@ func UpdateGraph(old_graph Graph, command InsertActionCommand) Graph {
 func GetJourney(action string, current map[string]Vertex, vertices map[string]Vertex) map[string]journey_vertex {
 	new_journey := map[string]journey_vertex{action: {data: action}}
 
-	if current[action].target == "" {
+	if current[action].Target == "" {
 		return new_journey
 	}
 
-	target_name := current[action].target
+	target_name := current[action].Target
 	target_vertex := vertices[target_name]
 
 	if entry, ok := new_journey[action]; ok {

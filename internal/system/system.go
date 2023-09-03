@@ -8,24 +8,24 @@ import (
 )
 
 type System struct {
-	graph        journey.Graph
-	applications []config.Application
-	mailbox      chan journey.Command
+	Graph        journey.Graph
+	Applications []config.Application
+	Mailbox      chan journey.Command
 }
 
 func new_updated_system(graph journey.Graph, mailbox chan journey.Command, applications []config.Application) System {
 	return System{
-		graph:        graph,
-		applications: applications,
-		mailbox:      mailbox,
+		Graph:        graph,
+		Applications: applications,
+		Mailbox:      mailbox,
 	}
 }
 
 func NewSystem(allowed_applications []config.Application) System {
 	system := System{
-		graph:        journey.NewGraph(make(map[string]journey.Vertex)),
-		applications: allowed_applications,
-		mailbox:      make(chan journey.Command),
+		Graph:        journey.NewGraph(make(map[string]journey.Vertex)),
+		Applications: allowed_applications,
+		Mailbox:      make(chan journey.Command),
 	}
 
 	go run(system)
@@ -33,14 +33,14 @@ func NewSystem(allowed_applications []config.Application) System {
 }
 
 func Send(sys System, message journey.Command) {
-	sys.mailbox <- message
+	sys.Mailbox <- message
 }
 
 func run(sys System) {
 	ticker := time.NewTicker(500 * time.Millisecond)
 	for {
 		select {
-		case message := <-sys.mailbox:
+		case message := <-sys.Mailbox:
 			sys = resolve_message(message, sys)
 		case t := <-ticker.C:
 			fmt.Println("time is over: ", t)
@@ -51,15 +51,15 @@ func run(sys System) {
 
 func resolve_message(message journey.Command, sys System) System {
 	if message.GetType() == journey.INSERT_ACTION {
-		return new_updated_system(journey.UpdateGraph(sys.graph, message.(journey.InsertActionCommand)), sys.mailbox, sys.applications)
+		return new_updated_system(journey.UpdateGraph(sys.Graph, message.(journey.InsertActionCommand)), sys.Mailbox, sys.Applications)
 	}
 
 	if message.GetType() == journey.GET_JOURNEY {
 		message_data := message.(journey.GetJourneyCommand).Data
 		message_channel := message.(journey.GetJourneyCommand).JourneyMap
-		node := sys.graph.Vertices[message_data]
+		node := sys.Graph.Vertices[message_data]
 
-		journey_map := journey.GetJourney(message_data, map[string]journey.Vertex{message_data: node}, sys.graph.Vertices)
+		journey_map := journey.GetJourney(message_data, map[string]journey.Vertex{message_data: node}, sys.Graph.Vertices)
 
 		message_channel <- journey_map
 		return sys
