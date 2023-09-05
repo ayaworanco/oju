@@ -10,22 +10,22 @@ import (
 )
 
 type test_suite struct {
-	apps   []config.Application
-	system system.System
+	resources []config.Resource
+	system    system.System
 }
 
 func setup() test_suite {
-	apps := []config.Application{
+	resources := []config.Resource{
 		{
-			Name:   "test_a",
-			AppKey: "test_a",
-			Host:   "http://test_a.svc.cluster.local",
+			Name: "test_a",
+			Key:  "test_a",
+			Host: "http://test_a.svc.cluster.local",
 		},
 	}
 
 	return test_suite{
-		apps:   apps,
-		system: system.NewSystem(apps),
+		resources: resources,
+		system:    system.NewSystem(resources),
 	}
 
 }

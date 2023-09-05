@@ -34,7 +34,7 @@ func (request *Request) String() string {
 	return fmt.Sprintf("%v\n%v\n%v", request.Header.String(), request.Timer, request.Message)
 }
 
-func NewRequest(head, message string, allowed_applications []config.Application) (Request, error) {
+func NewRequest(head, message string, resources []config.Resource) (Request, error) {
 	parts := strings.Split(head, " ")
 	if len(parts) != 3 {
 		return Request{}, errors.New(ERROR_MALFORMED_HEADER)
@@ -47,7 +47,7 @@ func NewRequest(head, message string, allowed_applications []config.Application)
 
 	app_key := parts[1]
 
-	if !is_application_allowed(app_key, allowed_applications) {
+	if !is_application_allowed(app_key, resources) {
 		return Request{}, errors.New(ERROR_APPLICATION_NOT_ALLOWED)
 	}
 
@@ -62,7 +62,7 @@ func NewRequest(head, message string, allowed_applications []config.Application)
 	}, nil
 }
 
-func Parse(packet string, allowed_applications []config.Application) (Request, error) {
+func Parse(packet string, resources []config.Resource) (Request, error) {
 	parts := strings.Split(packet, "\n")
 	if len(parts) != 2 {
 		return Request{}, errors.New(ERROR_MALFORMED_PACKET)
@@ -71,7 +71,7 @@ func Parse(packet string, allowed_applications []config.Application) (Request, e
 	head := parts[0]
 	message := parts[1]
 
-	request, request_error := NewRequest(head, message, allowed_applications)
+	request, request_error := NewRequest(head, message, resources)
 	if request_error != nil {
 		return Request{}, request_error
 	}
@@ -93,10 +93,10 @@ func is_verb_allowed(verb string) bool {
 	return false
 }
 
-func is_application_allowed(app_key string, allowed_applications []config.Application) bool {
+func is_application_allowed(app_key string, resources []config.Resource) bool {
 
-	for _, application := range allowed_applications {
-		if application.AppKey == app_key {
+	for _, application := range resources {
+		if application.Key == app_key {
 			return true
 		}
 	}

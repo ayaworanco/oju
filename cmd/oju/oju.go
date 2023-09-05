@@ -29,7 +29,7 @@ func main() {
 		log.Fatalln(load_config_error.Error())
 	}
 
-	system := system.NewSystem(config.AllowedApplications)
+	system := system.NewSystem(config.Resources)
 
 	port := os.Getenv("PORT")
 	if len(port) == 0 {
@@ -74,7 +74,7 @@ func handle_incoming_message(socket net.Conn, config config.Config, sys system.S
 			break
 		}
 
-		request, request_error := requester.Parse(string(message), config.AllowedApplications)
+		request, request_error := requester.Parse(string(message), config.Resources)
 		if request_error != nil {
 			log.Println("Error on parsing request: ", request_error.Error())
 			break

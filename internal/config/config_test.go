@@ -7,10 +7,11 @@ import (
 func TestReturnAllowedApplication(t *testing.T) {
 	config_json := `
 {
-	"allowed_applications": [
+	"resources": [
 	{
 	"name": "worker",
-	"app_key": "37F129EF-687E-47AC-B0C4-CBF6516B37ED"
+	"key": "37F129EF-687E-47AC-B0C4-CBF6516B37ED",
+	"host": "http://localhost"
 	}
 	]
 }
@@ -21,7 +22,7 @@ func TestReturnAllowedApplication(t *testing.T) {
 		t.Error(load_error)
 	}
 
-	if len(config.AllowedApplications) == 0 {
+	if len(config.Resources) == 0 {
 		t.Error("Should be at least 1")
 	}
 }

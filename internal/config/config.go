@@ -1,21 +1,21 @@
 package config
 
 import (
-	"log"
-	"fmt"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"log"
 	"os"
 )
 
 type Config struct {
-	AllowedApplications []Application `json:"allowed_applications"`
+	Resources []Resource `json:"resources"`
 }
 
-type Application struct {
-	Name   string `json:"name"`
-	AppKey string `json:"app_key"`
-	Host   string `json:"host"`
+type Resource struct {
+	Name string `json:"name"`
+	Key  string `json:"key"`
+	Host string `json:"host"`
 }
 
 func BuildConfig(config_file []byte) (Config, error) {
@@ -26,14 +26,14 @@ func BuildConfig(config_file []byte) (Config, error) {
 		return Config{}, err
 	}
 
-	if len(config.AllowedApplications) == 0 {
+	if len(config.Resources) == 0 {
 		return Config{}, errors.New("Malformed config file")
 	}
 
-	for _, application := range config.AllowedApplications {
+	for _, application := range config.Resources {
 		fmt.Println("=> application loaded!")
 		fmt.Println("[name]: ", application.Name)
-		fmt.Println("[key]: ", application.AppKey)
+		fmt.Println("[key]: ", application.Key)
 		fmt.Println("[host]: ", application.Host)
 		fmt.Println("--------------------------------------------")
 	}
@@ -55,7 +55,6 @@ func LoadConfigFile() ([]byte, error) {
 	if config_file == "" {
 		config_file = path + "/config.json"
 	}
-
 
 	file, read_error := os.ReadFile(config_file)
 	if read_error != nil {
