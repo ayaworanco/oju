@@ -2,6 +2,7 @@ package system
 
 import (
 	"fmt"
+	"oju/internal/armazen"
 	"oju/internal/config"
 	"oju/internal/journey"
 	"time"
@@ -28,6 +29,7 @@ func NewSystem(resources []config.Resource) System {
 		Mailbox:   make(chan journey.Command),
 	}
 
+	// TODO: this should load system
 	go run(system)
 	return system
 }
@@ -42,6 +44,7 @@ func run(sys System) {
 		select {
 		case message := <-sys.Mailbox:
 			sys = resolve_message(message, sys)
+			armazen.Save(sys)
 		case t := <-ticker.C:
 			fmt.Println("time is over: ", t)
 			return

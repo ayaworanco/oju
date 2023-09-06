@@ -1,11 +1,9 @@
-package config
+package usecases
 
-import (
-	"testing"
-)
+import "testing"
 
-func TestReturnAllowedApplication(t *testing.T) {
-	config_json := `
+func TestReturnAllowedApps(t *testing.T) {
+	config_json := `	
 {
 	"resources": [
 	{
@@ -15,7 +13,7 @@ func TestReturnAllowedApplication(t *testing.T) {
 	}
 	]
 }
-`
+	`
 
 	config, load_error := BuildConfig([]byte(config_json))
 	if load_error != nil {

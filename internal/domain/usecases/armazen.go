@@ -1,20 +1,18 @@
-package armazen
+package usecases
 
 import (
 	"bytes"
 	"compress/gzip"
 	"encoding/gob"
-	"oju/internal/system"
 	"os"
 	"path/filepath"
 	"time"
 )
 
-func EncodeSystemToBytes(sys system.System) ([]byte, error) {
+func encode_to_bytes[T any](entity T) ([]byte, error) {
 	buffer := bytes.Buffer{}
-	gob.Register(system.System{})
 	encoding := gob.NewEncoder(&buffer)
-	encoding_error := encoding.Encode(sys)
+	encoding_error := encoding.Encode(entity)
 
 	if encoding_error != nil {
 		return []byte{}, encoding_error
@@ -23,16 +21,17 @@ func EncodeSystemToBytes(sys system.System) ([]byte, error) {
 	return buffer.Bytes(), nil
 }
 
-func Compress(buffer []byte) []byte {
-	zip_buffer := bytes.Buffer{}
-	zipped := gzip.NewWriter(&zip_buffer)
+func compress(buffer []byte) []byte {
+	compress_buffer := bytes.Buffer{}
+	compressed := gzip.NewWriter(&compress_buffer)
 
-	zipped.Write(buffer)
-	zipped.Close()
-	return zip_buffer.Bytes()
+	compressed.Write(buffer)
+	compressed.Close()
+
+	return compress_buffer.Bytes()
 }
 
-func WriteToFile(buffer []byte) error {
+func write_to_file(buffer []byte) error {
 	folder_path, folder_path_error := generate_data_folder()
 	if folder_path_error != nil {
 		return folder_path_error
@@ -56,7 +55,6 @@ func WriteToFile(buffer []byte) error {
 }
 
 func generate_data_folder() (string, error) {
-
 	path, path_error := os.Executable()
 	if path_error != nil {
 		return "", path_error
@@ -75,9 +73,25 @@ func generate_data_folder() (string, error) {
 			return "", make_dir_error
 		}
 	}
+
 	return executable_path, nil
 }
 
 func output_system_file(folder_path string) (string, error) {
 	return folder_path + "/" + time.Now().Format(time.RFC3339) + ".dat", nil
+}
+
+func save[T any](entity T) error {
+
+	system_to_bytes, error_encoding := encode_to_bytes[T](entity)
+	if error_encoding != nil {
+		return error_encoding
+	}
+
+	system_compressed := compress(system_to_bytes)
+	error_on_writing := write_to_file(system_compressed)
+	if error_on_writing != nil {
+		return error_encoding
+	}
+	return nil
 }

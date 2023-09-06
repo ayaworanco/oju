@@ -1,33 +1,25 @@
-package config
+package usecases
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
+	"oju/internal/domain/entities"
 	"os"
 )
 
-type Config struct {
-	Resources []Resource `json:"resources"`
-}
+func BuildConfig(config_file []byte) (entities.Config, error) {
+	var config entities.Config
 
-type Resource struct {
-	Name string `json:"name"`
-	Key  string `json:"key"`
-	Host string `json:"host"`
-}
+	unmarshal_err := json.Unmarshal(config_file, &config)
 
-func BuildConfig(config_file []byte) (Config, error) {
-	var config Config
-
-	err := json.Unmarshal(config_file, &config)
-	if err != nil {
-		return Config{}, err
+	if unmarshal_err != nil {
+		return entities.Config{}, unmarshal_err
 	}
 
 	if len(config.Resources) == 0 {
-		return Config{}, errors.New("Malformed config file")
+		return entities.Config{}, errors.New("malformed config file")
 	}
 
 	for _, application := range config.Resources {
@@ -51,14 +43,13 @@ func LoadConfigFile() ([]byte, error) {
 	}
 
 	config_file = os.Getenv("CONFIG_JSON_PATH")
-
 	if config_file == "" {
 		config_file = path + "/config.json"
 	}
 
 	file, read_error := os.ReadFile(config_file)
 	if read_error != nil {
-		return nil, errors.New(config_file + " file not found")
+		return nil, errors.New(config_file + ": file not found")
 	}
 
 	return file, nil
