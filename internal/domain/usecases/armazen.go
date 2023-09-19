@@ -4,8 +4,12 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/gob"
+	"io"
+	"oju/internal/domain/entities"
 	"os"
 	"path/filepath"
+	"sort"
+	"strings"
 	"time"
 )
 
@@ -29,6 +33,21 @@ func compress(buffer []byte) []byte {
 	compressed.Close()
 
 	return compress_buffer.Bytes()
+}
+
+func decompress(buffer []byte) ([]byte, error) {
+	reader, error_on_new_reader := gzip.NewReader(bytes.NewReader(buffer))
+	if error_on_new_reader != nil {
+		return []byte{}, error_on_new_reader
+	}
+
+	data, error_on_read := io.ReadAll(reader)
+	if error_on_read != nil {
+		return []byte{}, error_on_read
+	}
+	reader.Close()
+
+	return data, nil
 }
 
 func write_to_file(buffer []byte) error {
@@ -93,4 +112,82 @@ func save[T any](entity T) error {
 		return error_encoding
 	}
 	return nil
+}
+
+func LoadSystem() (entities.System, error) {
+	data, error_on_load_data := load_file()
+	if error_on_load_data != nil {
+		return entities.System{}, error_on_load_data
+	}
+
+	decompressed, error_on_decompress := decompress(data)
+
+	if error_on_decompress != nil {
+		return entities.System{}, error_on_decompress
+	}
+
+	entity := entities.System{}
+	decoder := gob.NewDecoder(bytes.NewReader(decompressed))
+	error_on_decode := decoder.Decode(&entity)
+
+	if error_on_decode != nil {
+		return entities.System{}, error_on_decode
+	}
+
+	return entity, nil
+}
+
+func load_file() ([]byte, error) {
+	path, path_error := os.Executable()
+	if path_error != nil {
+		return []byte{}, path_error
+	}
+	executable_path := filepath.Dir(path) + "/data"
+
+	env_data_dir := os.Getenv("OUTPUT_DATA_DIR")
+	if env_data_dir != "" {
+		executable_path = env_data_dir + "/data"
+	}
+
+	file_name, file_name_error := get_last_data_file(executable_path)
+
+	if file_name_error != nil {
+		return []byte{}, file_name_error
+	}
+
+	data, err_on_read := os.ReadFile(executable_path + "/" + file_name)
+
+	if err_on_read != nil {
+		return []byte{}, err_on_read
+	}
+
+	return data, nil
+}
+
+func get_last_data_file(path string) (string, error) {
+	dir, dir_error := os.ReadDir(path)
+
+	if dir_error != nil {
+		return "", dir_error
+	}
+
+	var timers []time.Time
+
+	for _, entry := range dir {
+		entry_timer := strings.Replace(entry.Name(), ".dat", "", 1)
+		entry_timer = strings.Replace(entry_timer, "-03:00", "", 1)
+		timing, error_timning := time.Parse("2006-01-02T15:04:05", entry_timer)
+
+		if error_timning != nil {
+			return "", error_timning
+		}
+
+		timers = append(timers, timing)
+	}
+
+	sort.SliceStable(timers, func(i, j int) bool {
+		return timers[i].After(timers[j])
+	})
+
+	return strings.Replace(timers[0].Format(time.RFC3339), "Z", "-03:00.dat", 1), nil
 }
