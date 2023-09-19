@@ -1,9 +1,7 @@
 package usecases
 
 import (
-	"fmt"
 	"oju/internal/domain/entities"
-	"time"
 )
 
 func new_updated_system(graph entities.Graph, mailbox chan entities.Command, resources []entities.Resource) entities.System {
@@ -30,16 +28,10 @@ func Send(sys entities.System, message entities.Command) {
 }
 
 func run(sys entities.System) {
-	ticker := time.NewTicker(500 * time.Millisecond)
 	for {
-		select {
-		case message := <-sys.Mailbox:
-			sys = resolve_message(message, sys)
-			// save_system(sys)
-		case t := <-ticker.C:
-			fmt.Println("time is over: ", t)
-			return
-		}
+		message := <-sys.Mailbox
+		sys = resolve_message(message, sys)
+		save(sys)
 	}
 }
 

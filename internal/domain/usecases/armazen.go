@@ -82,7 +82,6 @@ func output_system_file(folder_path string) (string, error) {
 }
 
 func save[T any](entity T) error {
-
 	system_to_bytes, error_encoding := encode_to_bytes[T](entity)
 	if error_encoding != nil {
 		return error_encoding
