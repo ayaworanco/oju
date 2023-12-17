@@ -6,6 +6,7 @@ import (
 	"oju/internal/utils"
 )
 
+// if I turn this as a map
 func new_graph(vertices map[string]entities.Vertex) entities.Graph {
 	return entities.Graph{
 		Vertices: vertices,
