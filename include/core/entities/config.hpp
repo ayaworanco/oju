@@ -1,8 +1,9 @@
 #pragma once
 #include <iostream>
 #include <filesystem>
+#include <vector>
 
-namespace Entities
+namespace entities
 {
 
   typedef struct {

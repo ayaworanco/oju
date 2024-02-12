@@ -7,9 +7,9 @@
 #include <typeinfo>
 
 namespace fs = std::filesystem;
-
 using namespace nlohmann;
-namespace Entities
+
+namespace entities
 {
   Config::Config(fs::path file_path)
   {

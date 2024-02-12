@@ -1,9 +1,10 @@
 file(GLOB HEADER_LIST
-  CONFIGURE_DEPENDS "${oju_SOURCE_DIR}/include/core/*.hpp")
+  CONFIGURE_DEPENDS "${oju_SOURCE_DIR}/include/**/*.hpp")
+file(GLOB SOURCE_LIST "${oju_SOURCE_DIR}/src/**/*.cpp")
 
-add_library(${OJU_LIBRARY_NAME} entities/config.cpp ${HEADER_LIST})
+add_library(${OJU_LIBRARY_NAME} ${SOURCE_LIST} ${HEADER_LIST})
 target_include_directories(${OJU_LIBRARY_NAME} PUBLIC ../include)
-target_compile_features(${OJU_LIBRARY_NAME} PRIVATE cxx_std_17)
+target_compile_features(${OJU_LIBRARY_NAME} PRIVATE cxx_std_23)
 
 FetchContent_Declare(
   nlohmann_json
