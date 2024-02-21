@@ -7,23 +7,20 @@ import (
 	"log"
 	"net"
 	"oju/internal/commander"
+	"oju/internal/config"
 	"oju/internal/domain/entities"
 	"oju/internal/domain/usecases"
+	"oju/internal/request"
+	"oju/internal/track"
 	"os"
 )
 
 func main() {
 	fmt.Println("\033[33m" + commander.USAGE + "\033[97m")
-	config_file, load_error := usecases.LoadConfigFile()
+	config, load_error := config.LoadConfigFile()
 
 	if load_error != nil {
 		log.Fatalln(load_error.Error())
-	}
-
-	config, load_config_error := usecases.BuildConfig(config_file)
-
-	if load_config_error != nil {
-		log.Fatalln(load_config_error.Error())
 	}
 
 	system := usecases.NewSystem(config.Resources)
@@ -52,7 +49,7 @@ func main() {
 	}
 }
 
-func handle_incoming_message(socket net.Conn, config entities.Config, sys entities.System) {
+func handle_incoming_message(socket net.Conn, config config.Config, sys entities.System) {
 	log.Println("New connection accepted: ", socket.RemoteAddr().String())
 	reader := bufio.NewReader(socket)
 
@@ -71,15 +68,15 @@ func handle_incoming_message(socket net.Conn, config entities.Config, sys entiti
 			break
 		}
 
-		request, request_error := usecases.Parse(string(message), config.Resources)
+		request, request_error := request.Parse(string(message), config.Resources)
 		if request_error != nil {
 			log.Println("Error on parsing request: ", request_error.Error())
 			break
 		}
 
 		switch request.Header.Verb {
-		case "TRACE":
-			trace, parse_trace_error := usecases.ParseTrace(request.Message)
+		case "TRACK":
+			trace, parse_trace_error := track.Parse(request.Message)
 
 			if parse_trace_error != nil {
 				log.Println("Error on parsing trace: ", parse_trace_error.Error())
@@ -88,6 +85,7 @@ func handle_incoming_message(socket net.Conn, config entities.Config, sys entiti
 			command := entities.NewInsertActionCommand(trace)
 			usecases.Send(sys, command)
 		default:
+			log.Println("tried VERB: ", request.Header.Verb)
 		}
 
 	}

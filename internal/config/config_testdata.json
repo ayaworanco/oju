@@ -1,0 +1,9 @@
+{
+  "resources": [
+    {
+      "name": "worker",
+      "key": "worker-key",
+      "host": "worker-host"
+    }
+  ]
+}

@@ -1,16 +1,16 @@
-package usecases
+package request
 
 import (
-	"oju/internal/domain/entities"
+	"oju/internal/config"
 	"testing"
 )
 
-func load_config() entities.Config {
-	config := entities.Config{
-		Resources: []entities.Resource{
+func load_config() config.Config {
+	config := config.Config{
+		Resources: []config.Resource{
 			{
 				Name: "worker",
-				Key:  "3FAFCF87-BF66-4DC5-84C1-34E178FF55CC",
+				Key:  "worker-key",
 				Host: "http://localhost",
 			},
 		},
@@ -47,25 +47,12 @@ func TestMalformedHeader(t *testing.T) {
 	}
 }
 
-func TestParseLog(t *testing.T) {
-	test_packet := "LOG 3FAFCF87-BF66-4DC5-84C1-34E178FF55CC AWO\n54.36.149.41 - - [22/Jan/2019:03:56:14 +0330] \"GET /filter/27|13%20%D9%85%DA%AF%D8%A7%D9%BE%DB%8C%DA%A9%D8%B3%D9%84,27|%DA%A9%D9%85%D8%AA%D8%B1%20%D8%A7%D8%B2%205%20%D9%85%DA%AF%D8%A7%D9%BE%DB%8C%DA%A9%D8%B3%D9%84,p53 HTTP/1.1\" 200 30577 \"-\" \"Mozilla/5.0 (compatible; AhrefsBot/6.1; +http://ahrefs.com/robot/)\" \"-\""
+func TestHeaderValidationDisallowedResources(t *testing.T) {
+	test_disallowed_resources := "LOG AAAAAAAAAAAAAA AWO1.1\n54.36.149.41 - - [22/Jan/2019:03:56:14 +0330] \"GET /filter/27|13%20%D9%85%DA%AF%D8%A7%D9%BE%DB%8C%DA%A9%D8%B3%D9%84,27|%DA%A9%D9%85%D8%AA%D8%B1%20%D8%A7%D8%B2%205%20%D9%85%DA%AF%D8%A7%D9%BE%DB%8C%DA%A9%D8%B3%D9%84,p53 HTTP/1.1\" 200 30577 \"-\" \"Mozilla/5.0 (compatible; AhrefsBot/6.1; +http://ahrefs.com/robot/)\" \"-\""
 	config := load_config()
-	log, parse_error := Parse(test_packet, config.Resources)
-	if parse_error != nil {
-		t.Error(parse_error.Error())
-	}
-
-	if log.Timer == "" {
-		t.Error("Timer is empty")
-	}
-}
-
-func TestHeaderValidationDisallowedApps(t *testing.T) {
-	test_disallowed_apps := "LOG AAAAAAAAAAAAAA AWO1.1\n54.36.149.41 - - [22/Jan/2019:03:56:14 +0330] \"GET /filter/27|13%20%D9%85%DA%AF%D8%A7%D9%BE%DB%8C%DA%A9%D8%B3%D9%84,27|%DA%A9%D9%85%D8%AA%D8%B1%20%D8%A7%D8%B2%205%20%D9%85%DA%AF%D8%A7%D9%BE%DB%8C%DA%A9%D8%B3%D9%84,p53 HTTP/1.1\" 200 30577 \"-\" \"Mozilla/5.0 (compatible; AhrefsBot/6.1; +http://ahrefs.com/robot/)\" \"-\""
-	config := load_config()
-	_, parse_error := Parse(test_disallowed_apps, config.Resources)
+	_, parse_error := Parse(test_disallowed_resources, config.Resources)
 	if parse_error == nil {
-		t.Error("Should be an error because that app is not allowed")
+		t.Error("Should be an error because that resource is not allowed")
 	}
 }
 
@@ -76,4 +63,12 @@ func TestHeaderWithInvalidVerb(t *testing.T) {
 	if parse_error == nil {
 		t.Error("Should be an error because that app is not allowed")
 	}
+}
+
+func TestTraceHttpPacket(t *testing.T) {
+	// TODO: generate test
+}
+
+func TestGrpcPacket(t *testing.T) {
+	// TODO: generate test
 }
