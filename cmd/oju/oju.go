@@ -8,8 +8,6 @@ import (
 	"net"
 	"oju/internal/commander"
 	"oju/internal/config"
-	"oju/internal/domain/entities"
-	"oju/internal/domain/usecases"
 	"oju/internal/request"
 	"oju/internal/track"
 	"os"
@@ -23,7 +21,15 @@ func main() {
 		log.Fatalln(load_error.Error())
 	}
 
-	system := usecases.NewSystem(config.Resources)
+	// TODO: when start server, initialize two channels
+	// ARMAZEN: will be responsible to get these tracks/logs whatever
+	// 			and save to sqlite
+	// FEATURIZER: will be responsible to get these tracks/logs
+	// 				and extract features from these structures
+
+	// featurizer will be serving as data pre-processor for running DBSCAN
+	// when is needed to get anomaly detection
+	// system := usecases.NewSystem(config.Resources)
 
 	port := os.Getenv("PORT")
 	if len(port) == 0 {
@@ -45,11 +51,11 @@ func main() {
 			log.Println("Socket Error: ", socket_error.Error())
 		}
 
-		go handle_incoming_message(socket, config, system)
+		go handle_incoming_message(socket, config)
 	}
 }
 
-func handle_incoming_message(socket net.Conn, config config.Config, sys entities.System) {
+func handle_incoming_message(socket net.Conn, config config.Config) {
 	log.Println("New connection accepted: ", socket.RemoteAddr().String())
 	reader := bufio.NewReader(socket)
 
@@ -76,14 +82,15 @@ func handle_incoming_message(socket net.Conn, config config.Config, sys entities
 
 		switch request.Header.Verb {
 		case "TRACK":
-			trace, parse_trace_error := track.Parse(request.Message)
+			_, parse_trace_error := track.Parse(request.Message)
 
 			if parse_trace_error != nil {
 				log.Println("Error on parsing trace: ", parse_trace_error.Error())
 			}
+			// FIXME: what we do here
 
-			command := entities.NewInsertActionCommand(trace)
-			usecases.Send(sys, command)
+			// command := entities.NewInsertActionCommand(trace)
+			// usecases.Send(sys, command)
 		default:
 			log.Println("tried VERB: ", request.Header.Verb)
 		}
