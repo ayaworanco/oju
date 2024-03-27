@@ -24,8 +24,8 @@ func main() {
 	// TODO: when start server, initialize two channels
 	// ARMAZEN: will be responsible to get these tracks/logs whatever
 	// 			and save to sqlite
-	// FEATURIZER: will be responsible to get these tracks/logs
-	// 				and extract features from these structures
+	// PROCESSOR: will be responsible to get these logs
+	// 							and pre process this
 
 	// featurizer will be serving as data pre-processor for running DBSCAN
 	// when is needed to get anomaly detection

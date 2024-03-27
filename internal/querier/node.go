@@ -3,7 +3,7 @@ package querier
 import (
 	"regexp"
 
-	"oju/internal/parser"
+	"oju/internal/drain"
 )
 
 type node struct {
@@ -11,7 +11,7 @@ type node struct {
 	Result bool
 }
 
-func (node *node) set_result(log_groups []*parser.LogGroup) {
+func (node *node) set_result(log_groups []*drain.LogGroup) {
 	regex := node.Data["variable"]
 	operator := node.Data["operator"]
 	value := node.Data["value"]

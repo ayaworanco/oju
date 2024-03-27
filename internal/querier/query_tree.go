@@ -3,7 +3,7 @@ package querier
 import (
 	"errors"
 
-	"oju/internal/parser"
+	"oju/internal/drain"
 )
 
 type query_tree struct {
@@ -20,7 +20,7 @@ func new_query_tree(children []*node) (*query_tree, error) {
 	}, nil
 }
 
-func (query_tree *query_tree) resolve(log_groups []*parser.LogGroup) bool {
+func (query_tree *query_tree) resolve(log_groups []*drain.LogGroup) bool {
 	if len(query_tree.children) == 1 {
 		query_tree.children[0].set_result(log_groups)
 		return query_tree.children[0].Result
@@ -79,7 +79,7 @@ func (query_tree *query_tree) resolve(log_groups []*parser.LogGroup) bool {
 	return false
 }
 
-func set_term_result(parts []*node, log_groups []*parser.LogGroup) {
+func set_term_result(parts []*node, log_groups []*drain.LogGroup) {
 	for _, node := range parts {
 		if node.is_term() {
 			node.set_result(log_groups)

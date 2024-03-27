@@ -5,10 +5,10 @@ import (
 	"regexp"
 	"strings"
 
-	"oju/internal/parser"
+	"oju/internal/drain"
 )
 
-func Parse(query string, log_groups []*parser.LogGroup) (bool, error) {
+func Parse(query string, log_groups []*drain.LogGroup) (bool, error) {
 	query = strings.Trim(query, "'")
 	tokens := strings.Split(query, " ")
 

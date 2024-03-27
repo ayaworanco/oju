@@ -1,4 +1,4 @@
-package parser
+package drain
 
 import (
 	"fmt"

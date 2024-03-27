@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"oju/internal/parser"
+	"oju/internal/drain"
 )
 
 func TestInvalidQueries(t *testing.T) {
@@ -83,8 +83,8 @@ func TestValidQuery(t *testing.T) {
 	}
 }
 
-func init_test_suite() []*parser.LogGroup {
-	tree := parser.NewTree(10)
+func init_test_suite() []*drain.LogGroup {
+	tree := drain.NewTree(10)
 
 	file, _ := os.ReadFile("testdata/query_test.log")
 
@@ -92,7 +92,7 @@ func init_test_suite() []*parser.LogGroup {
 	logs := strings.Split(log, "\n")
 
 	for _, registry := range logs {
-		parser.ParseLog(tree, registry)
+		drain.ParseLog(tree, registry)
 	}
 
 	log_groups := tree.GetLogGroups(tree.GetRoot())

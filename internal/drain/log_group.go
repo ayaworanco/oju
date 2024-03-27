@@ -1,4 +1,4 @@
-package parser
+package drain
 
 import (
 	"fmt"
@@ -6,6 +6,54 @@ import (
 )
 
 // TODO: generate a unique identifier md5 based on time
+/*
+
+map[string]LengthLayer{
+	{
+		"3": LengthLayer {
+			length: 3,
+			...
+		},
+		"15": ...
+	}
+}
+
+LengthLayer {
+	length: 3,
+	// children: map[string]interface{}
+	{
+		// Temperature * exceeds
+		// Temperature * low
+		// Temperature * high
+		"Temperature": {
+			"*": {
+				"high": nil,
+				"low": nil,
+				"exceeds": nil
+			}
+		}
+	}
+	children: []DataLayer{
+		{
+			data: "Temperature"
+		},
+		{
+			data: "*"
+		},
+		{
+			data: "exceeds"
+		}
+	},
+	log_groups: []LogGroup{
+		{
+			LogEvent: "Temperature * exceeds",
+			LogParameters: map[string][]string{
+				"Temperature * exceeds": ["(41C)"],
+			}
+		}
+	}
+}
+*/
 
 type LogGroup struct {
 	LogEvent      string
@@ -61,3 +109,10 @@ func add_log_group(node *node, log_message string, id string) {
 		update_log_event(found_log_group, log_message)
 	}
 }
+
+/*
+[
+	[43, 0],
+	[41, 41]
+]
+*/

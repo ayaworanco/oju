@@ -2,22 +2,24 @@ package armazen
 
 import "oju/internal/track"
 
+type Action int
+
 const (
-	INSERT_TRACK = iota
+	INSERT_TRACK Action = iota
 	GET_TRACK
 )
 
 type Command interface {
-	GetType() int
+	GetType() Action
 }
 
 type InsertTrackCommand struct {
-	command_type int
+	command_type Action
 	Data         track.Track
 }
 
 type GetTrackCommand struct {
-	command_type int
+	command_type Action
 	Data         string
 }
 
@@ -35,10 +37,10 @@ func NewGetTrackCommand(data string) GetTrackCommand {
 	}
 }
 
-func (command GetTrackCommand) GetType() int {
+func (command GetTrackCommand) GetType() Action {
 	return command.command_type
 }
 
-func (command InsertTrackCommand) GetType() int {
+func (command InsertTrackCommand) GetType() Action {
 	return command.command_type
 }
