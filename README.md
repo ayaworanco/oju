@@ -1,26 +1,50 @@
-<center> <h1>
-  Oju
-  </h1>  </center>
+# oju
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/oju-dev/oju)
 
 <p align="center">
-  <img src="images/Oju.png" />
+  <img src="images/oju_black.png" />
 </p>
 
-A stream tracing and logger that can be used for all your applications in one server.
+> oju is a arrow-native pipeline that structure logs based on Drain algorithm using a fixed-depth tree.
 
-> ### Table of contents
+### updates and improvements
 
-- [Docs](https://roqueando.github.io/oju/)
-- [Contributing](#contributing)
-- [License](#license)
+The project still in development and will pass to a migration and the next updates will be the following:
 
-## Contributing
+- [ ] migration to C++
+- [ ] separate the drain algorithm in functional tools
+- [ ] receive data from multiple data-sources
+- [ ] still thinking in more features :P
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
 
-Please make sure to update tests as appropriate.
+## 💻 pre-requisites
+Before start, verify if you have the following things:
+- you have installed the most recent version of some C++ compiler, and CMake version at least 3.14.
+- you have installed the Make tool
+- you have any of `windows`, `macos`, `linux` operating system
 
-## License
+## 🚀 installing oju
+To install `oju` you need to:
+- clone repository
+```sh
+git clone https://github.com/oju-dev/oju.git
+```
+- build
+```sh
+make build
+```
 
-[MIT](https://choosealicense.com/licenses/mit/)
+- tests
+```sh
+make test 
+```
+
+- more incoming...
+
+## 😄 be a contributor 
+
+Want to be part of contributor? See the [contributing](CONTRIBUTING.md) page for how to contribute.
+
+## 📝 license
+
+This project is under the license. See the file [LICENSE](LICENSE.md) for more details
