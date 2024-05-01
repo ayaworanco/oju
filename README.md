@@ -10,7 +10,7 @@
 
 The project still in development and will pass to a migration and the next updates will be the following:
 
-- [ ] migration to C++
+- [ ] migration to C++ (in progress...)
 - [ ] separate the drain algorithm in functional tools
 - [ ] receive data from multiple data-sources
 - [ ] still thinking in more features :P
