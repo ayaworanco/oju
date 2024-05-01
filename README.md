@@ -1,9 +1,8 @@
-# oju
-![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/oju-dev/oju)
 
 <p align="center">
   <img src="images/oju_black.png" />
 </p>
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/oju-dev/oju)
 
 > oju is a arrow-native pipeline that structure logs based on Drain algorithm using a fixed-depth tree.
 
@@ -29,14 +28,9 @@ To install `oju` you need to:
 ```sh
 git clone https://github.com/oju-dev/oju.git
 ```
-- build
+- build and test
 ```sh
 make build
-```
-
-- tests
-```sh
-make test 
 ```
 
 - more incoming...

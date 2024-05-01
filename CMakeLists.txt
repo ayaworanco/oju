@@ -18,7 +18,7 @@ project(
 if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   set(CMAKE_CXX_EXTENSIONS OFF)
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-  # include(CTest)
+  include(CTest)
 endif()
 
 include(FetchContent)
@@ -31,5 +31,6 @@ add_subdirectory(app)
 
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
+  enable_testing()
   add_subdirectory(tests)
 endif()

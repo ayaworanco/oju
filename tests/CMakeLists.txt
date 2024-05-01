@@ -8,8 +8,6 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-enable_testing()
-
 # config_test
 add_executable(tests ${TEST_LIST})
 target_compile_features(tests PRIVATE cxx_std_23)
