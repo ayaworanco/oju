@@ -14,8 +14,16 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(nlohmann_json)
 
+FetchContent_Declare(
+  argparse
+  GIT_REPOSITORY https://github.com/p-ranav/argparse.git
+  GIT_TAG v3.0
+)
 
-target_link_libraries(${OJU_LIBRARY_NAME} nlohmann_json::nlohmann_json)
+FetchContent_MakeAvailable(argparse)
+
+
+target_link_libraries(${OJU_LIBRARY_NAME} nlohmann_json::nlohmann_json argparse::argparse)
 
 source_group(
   TREE "${PROJECT_SOURCE_DIR}/include"
