@@ -27,8 +27,7 @@ include(FetchContent)
 add_subdirectory(src)
 
 # Executable is here
-add_subdirectory(app)
-
+add_subdirectory(length-layer)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
   enable_testing()

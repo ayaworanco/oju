@@ -2,7 +2,7 @@ TARGET = oju
 BUILDDIR = build
 
 run: $(BUILDDIR)/Makefile
-	@cd $(BUILDDIR) && ./app/$(TARGET)
+	@cd $(BUILDDIR) && ./$(module)/$(strategy)
 
 test: $(BUILDDIR)/Makefile
 	@cd $(BUILDDIR) && ctest --output-on-failure --gtest_catch_exceptions=0
